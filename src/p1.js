@@ -1,0 +1,114 @@
+
+const LS='atelier-de-marque-v2';
+/* ---------- données ---------- */
+const PAIRS=[
+  {name:'Bricolage Grotesque + Instrument Sans',d:'AM_bricolage',b:'AM_instrument'},
+  {name:'Lora + Work Sans',d:'AM_lora',b:'AM_work'},
+  {name:'Poppins + Inter',d:'AM_poppins',b:'AM_inter'},
+  {name:'Big Shoulders + Work Sans',d:'AM_bigshoulders',b:'AM_work'},
+  {name:'Young Serif + Outfit',d:'AM_young',b:'AM_outfit'},
+  {name:'Gloock + Instrument Sans',d:'AM_gloock',b:'AM_instrument'},
+  {name:'Erica One + Outfit',d:'AM_erica',b:'AM_outfit'},
+  {name:'Smooch Sans + Inter',d:'AM_smooch',b:'AM_inter'},
+  {name:'Libre Baskerville + Work Sans',d:'AM_baskerville',b:'AM_work'},
+  {name:'Italiana + Outfit',d:'AM_italiana',b:'AM_outfit'},
+  {name:'Instrument Serif + Inter',d:'AM_instserif',b:'AM_inter'},
+  {name:'Tektur + Inter',d:'AM_tektur',b:'AM_inter'},
+  {name:'Poiret One + Lora',d:'AM_poiret',b:'AM_lora'},
+  {name:'Crimson Pro + Poppins',d:'AM_crimson',b:'AM_poppins'},
+  {name:'Nothing You Could Do + Work Sans',d:'AM_nothing',b:'AM_work'}
+];
+const FIELDS=[
+  ['phone','Téléphone','+236 70 00 00 00','tel'],['whatsapp','WhatsApp','+236 70 00 00 00','tel'],
+  ['email','E-mail','contact@votremarque.com','email'],['web','Site web','www.votremarque.com','text'],
+  ['address','Adresse','Rue, quartier','text'],['city','Ville / pays','Bangui, Centrafrique','text'],['hours','Horaires','Lun-Sam 8h-18h','text'],['legal','Mention légale','RCCM 00-0000','text'],
+  ['instagram','Instagram','@votremarque','text'],
+  ['facebook','Facebook','VotreMarque','text'],['linkedin','LinkedIn','votre-marque','text'],
+  ['x','X (Twitter)','@votremarque','text'],['tiktok','TikTok','@votremarque','text'],['youtube','YouTube','@votremarque','text'],
+  ['snapchat','Snapchat','votremarque','text'],['pinterest','Pinterest','votremarque','text']
+];
+const EXTRA=[['sector','Secteur d\'activité','Boutique, restaurant, cabinet…'],['desc','Description courte','Ce que fait l\'entreprise'],['founder','Fondateur / contact','Prénom Nom'],['year','Année de création','2020'],['mentions','Autres mentions','Livraison gratuite dès 20 000']];
+const LABEL=Object.fromEntries(FIELDS.map(f=>[f[0],f[1]]));
+const ORDER=['instagram','facebook','linkedin','x','tiktok','youtube','snapchat','pinterest','whatsapp','phone','email','web','address','city','hours','legal'];
+const SOCIAL=['instagram','facebook','linkedin','x','tiktok','youtube','snapchat','pinterest','whatsapp'];
+const DEMO_INFO={instagram:'@votremarque',facebook:'VotreMarque',web:'www.votremarque.com'};
+const POS=[['tl','Haut gauche'],['tc','Haut centre'],['tr','Haut droite'],['bl','Bas gauche'],['bc','Bas centre'],['br','Bas droite']];
+const ICONSTYLES=[['contour','Contour'],['plein','Plein'],['pastille','Pastille']];
+const FORMATS={
+  post:{label:'Post carré',w:1080,h:1080,note:'Instagram, Facebook'},
+  portrait:{label:'Post portrait',w:1080,h:1350,note:'Instagram 4:5'},
+  story:{label:'Story',w:1080,h:1920,note:"Instagram, Facebook, WhatsApp. Le haut et le bas restent libres pour l'interface de l'application."},
+  linkedin:{label:'LinkedIn',w:1200,h:627,note:'Publication LinkedIn'},
+  banniere:{label:'Bannière',w:1500,h:500,note:'En-tête de profil X ou LinkedIn'}
+};
+const TPLS={
+  affiche:{label:'Affiche',info:'Photo plein cadre, grand titre sur dégradé.'},
+  bandeau:{label:'Bandeau',info:'Photo plein cadre, bandeau de marque en bas avec les coordonnées.'},
+  cadre:{label:'Cadre',info:'Photo encadrée sur fond de marque, texte dessous ou à gauche.'},
+  carte:{label:'Carte',info:'Carte de marque posée sur la photo.'},
+  split:{label:'Moitié',info:"Photo d'un côté, panneau de marque de l'autre."},
+  minimal:{label:'Minimal',info:'Petit texte discret au bas de la photo.'},
+  centre:{label:'Centré',info:'Titre centré sur la photo assombrie.'},
+  cercle:{label:'Cercle',info:'Photo en cercle sur fond de marque.'},
+  arche:{label:'Arche',info:'Photo en arche sur fond de marque.'},
+  ruban:{label:'Ruban',info:'Ruban de marque posé en travers de la photo.'},
+  magazine:{label:'Magazine',info:'Titre en majuscules et filet de couverture.'},
+  lisere:{label:'Liseré',info:'Photo plein cadre avec un fin contour arrondi de la couleur de la marque.',tag:1},
+  panneau:{label:'Panneau',info:"Photo plein cadre, grand panneau de couleur en bas avec une encoche arrondie.",tag:1},
+  encoches:{label:'Encoches',info:"Cadre de couleur, photo aux coins creusés, onglet pour la date ou le thème.",tag:1},
+  cartecta:{label:'Carte + bouton',info:'Photo en haut, carte de couleur vive avec titre, sous-titre et bouton.',tag:1},
+  courbe:{label:'Courbe',info:'Fond de couleur, photo à bord ondulé et trait courbe qui traverse le visuel.',tag:1},
+  bulle:{label:'Bulle',info:'Photo plein cadre, texte dans une bulle de dialogue colorée.',tag:1},
+  diagonale:{label:'Diagonale',info:'Photo coupée en biais, texte sur fond de marque.',tag:1},
+  vague:{label:'Vague',info:'Photo à bord bas ondulé, texte sur fond de marque.',tag:1},
+  nuage:{label:'Nuage',info:'Photo à bord bas en nuage, texte centré dessous.',tag:1},
+  citation:{label:'Citation',info:'Grande citation centrée avec petit portrait rond.',tag:1},
+  offre:{label:'Offre',info:'Photo, pastille de promotion en étoile et bouton. Saisissez la pastille dans « Texte ».',tag:1},
+  conseil:{label:'Conseil',info:'Fond de couleur, photo arrondie, pastille de rubrique et liste.',tag:1},
+  etiquettes:{label:'Étiquettes',info:'Photo avec titre et étiquettes empilées.',tag:1},
+  marque:{label:'Marque',info:'Grand logo centré sur la photo assombrie, titre court dessous.',tag:1}
+};
+const FONTS=[['auto','Selon la charte','']].concat(__FONTS__.map(f=>['AM_'+f.id,f.label,f.cat]));
+const FILTERS={none:['Naturel',''],bw:['Noir et blanc','grayscale(1) contrast(1.1)'],sepia:['Sépia','sepia(.85)'],warm:['Chaud','sepia(.25) saturate(1.3) hue-rotate(-8deg)'],cool:['Froid','saturate(1.05) hue-rotate(14deg) brightness(.98)'],contrast:['Contrasté','contrast(1.25) saturate(1.1)'],fade:['Délavé','contrast(.85) brightness(1.1) saturate(.8)'],vivid:['Vif','saturate(1.6) contrast(1.08)']};
+const DUOS={none:['Aucun'],brand:['Couleurs de la marque'],warm:['Chaud','#2B0F1E','#FFC48A'],cool:['Froid','#07203A','#9FE3F0'],mono:['Noir et crème','#0C0C0C','#F2EBDD'],neon:['Néon','#1A0B3D','#43F0D2']};
+const EFFECTS=[['none','Aucun'],['shadow','Ombre douce'],['outline','Contour'],['glow','Halo'],['hard','Ombre dure']];
+const TBOXES=[['none','Aucun'],['dark','Fond sombre'],['light','Fond clair'],['accent','Fond couleur d\'accent'],['glass','Verre']];
+const TXT0={tFont:'auto',bFont:'auto',upper:'auto',tSize:1,sSize:1,lh:1,ls:0,tEffect:'none',accentBar:true};
+const TXTSTYLES={
+  classic:['Classique',{}],
+  maj:['Majuscules',{upper:'upper',tSize:.9,ls:.04}],
+  impact:['Impact',{upper:'upper',tSize:1.2,lh:.95,tEffect:'shadow',tFont:'AM_bigshoulders'}],
+  discret:['Discret',{tSize:.78,lh:1.1,accentBar:false}],
+  elegant:['Élégant',{tFont:'AM_young',bFont:'AM_outfit'}],
+  moderne:['Moderne',{tFont:'AM_bricolage',bFont:'AM_instrument',tSize:1.05}],
+  affiche:['Affiche',{tFont:'AM_poppins',bFont:'AM_inter',upper:'upper',tSize:.95,tEffect:'shadow'}],
+  luxe:['Luxe',{tFont:'AM_italiana',bFont:'AM_outfit',upper:'upper',tSize:.85,ls:.12,accentBar:false}],
+  cond:['Condensé',{tFont:'AM_smooch',bFont:'AM_inter',upper:'upper',tSize:1.3,lh:.92}],
+  tech:['Tech',{tFont:'AM_tektur',bFont:'AM_jetbrains',tSize:.95,ls:.02}],
+  main:['À la main',{tFont:'AM_nothing',bFont:'AM_work',tSize:1,accentBar:false}]
+};
+/* styles prêts : combinent modèle, ambiance photo et texte */
+const PRESETS=[
+  {name:'Vif et jeune',s:{tpl:'panneau',filter:'vivid',duo:'none',vig:0,tFont:'AM_poppins',bFont:'AM_inter',tEffect:'none',upper:'normal',tSize:.9}},
+  {name:'Néon nocturne',s:{tpl:'lisere',filter:'contrast',duo:'neon',vig:.5,tFont:'AM_bigshoulders',upper:'upper',tEffect:'glow',tSize:1.1}},
+  {name:'Annonce événement',s:{tpl:'encoches',filter:'none',duo:'none',vig:0,tFont:'AM_bigshoulders',upper:'upper',tEffect:'none',tSize:1.3,lh:.92}},
+  {name:'Appli et services',s:{tpl:'cartecta',filter:'none',duo:'none',vig:0,tFont:'AM_bricolage',upper:'normal',tEffect:'none'}},
+  {name:'Fintech courbe',s:{tpl:'courbe',filter:'none',duo:'none',vig:0,tFont:'AM_instrument',upper:'normal',tEffect:'none'}},
+  {name:'Éditorial chic',s:{tpl:'magazine',filter:'bw',duo:'none',vig:.25,tFont:'AM_gloock',bFont:'AM_work',upper:'upper',ls:.06,tEffect:'none'}},
+  {name:'Promo choc',s:{tpl:'offre',filter:'vivid',duo:'none',vig:.2,tFont:'AM_erica',bFont:'AM_outfit',upper:'upper',tEffect:'hard',tSize:1}},
+  {name:'Duotone de marque',s:{tpl:'vague',filter:'none',duo:'brand',vig:.15,tFont:'AM_young',upper:'normal',tEffect:'none'}},
+  {name:'Sobre et doux',s:{tpl:'cadre',filter:'fade',duo:'none',vig:0,tFont:'AM_lora',bFont:'AM_work',upper:'normal',tEffect:'none'}},
+  {name:'Conseil du jour',s:{tpl:'conseil',filter:'none',duo:'none',vig:0,tFont:'AM_poppins',upper:'normal',tEffect:'none'}}
+];
+const PKEYS=['tpl','filter','duo','vig','wash','tFont','bFont','tSize','sSize','lh','ls','tWidth','upper','tColor','tEffect','tBox','accentBar','hl','align','ty','margin','footerPos','icons','accent','logoScale','plate','logoShape','logoTint','logoOpacity','logoMargin','shadow','logoRot','logoRad','logoGray','bright','contr','sat','blur','radius','ov','ovColor','ovAmount'];
+const CAN_FILTER=(()=>{try{return'filter'in CanvasRenderingContext2D.prototype}catch(e){return false}})();
+const DEFOPT=()=>({rm:false,tol:40,mode:'edge',bg:'#ffffff'});
+const DEMO_TAGS='Idée, Action, Résultat';
+
+let saved=[],current=null,chartes=[],presets=[];
+const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',
+  tFont:'auto',bFont:'auto',tSize:1,sSize:1,lh:1,ls:0,tWidth:1,upper:'auto',tColor:null,tEffect:'none',tBox:'none',accentBar:true,hl:true,
+  align:'auto',ty:'auto',dx:0,dy:0,margin:1,footerPos:'auto',icons:true,accent:null,
+  logoScale:1,plate:'light',logoShape:'round',logoTint:'orig',logoOpacity:1,logoMargin:1,logoFree:null,shadow:true,logoRot:0,logoRad:1,logoGray:false,
+  zoom:1,fx:.5,fy:.5,flip:false,filter:'none',bright:0,contr:0,sat:0,blur:0,radius:.022,ov:'auto',ovColor:'brand',ovAmount:1,vig:0,duo:'none',wash:0,washColor:'accent'});
+const v=Object.assign(V0(),{photo:null,photoSm:null,pf:{},drag:'photo',geom:null});
