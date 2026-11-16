@@ -1962,7 +1962,7 @@ window.addEventListener('hashchange',route);
   if(saved.length){current=clone(saved[0]);current.isDemo=false;chartes=genChartes(current.palette)}else{await initDemo()}
   buildStatic();setPlateDefault();syncBrandUI();renderChartes();renderSaved();syncVisualUI();syncStageInfo();setTab('model');route();schedule();
   try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null}catch(e){dl=null}
-  window.__atelier={v,draw,TPLS,FORMATS,get current(){return current}};
+  
 })();
 })();
 
