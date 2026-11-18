@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14506E"/><stop offset=".55" stop-color="#0A2638"/><stop offset="1" stop-color="#050E16"/></linearGradient>
+    <radialGradient id="sun" cx=".5" cy="1.05" r=".75"><stop offset="0" stop-color="#FF8A3D" stop-opacity=".8"/><stop offset="1" stop-color="#FF8A3D" stop-opacity="0"/></radialGradient>
+    <radialGradient id="teal" cx=".1" cy="0" r=".7"><stop offset="0" stop-color="#11BACA" stop-opacity=".55"/><stop offset="1" stop-color="#11BACA" stop-opacity="0"/></radialGradient>
+    <radialGradient id="dot" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#FFC08F"/><stop offset=".55" stop-color="#FF8A3D"/><stop offset="1" stop-color="#C4480C"/></radialGradient>
+    <clipPath id="r"><rect width="1024" height="1024" rx="232"/></clipPath>
+  </defs>
+  <g clip-path="url(#r)">
+    <rect width="1024" height="1024" fill="url(#bg)"/>
+    <rect width="1024" height="1024" fill="url(#teal)"/>
+    <rect width="1024" height="1024" fill="url(#sun)"/>
+    <g fill="none" stroke="#FFFFFF" stroke-opacity=".5" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M182 300V222a40 40 0 0 1 40-40h78"/><path d="M842 300V222a40 40 0 0 0-40-40h-78"/>
+      <path d="M182 724v78a40 40 0 0 0 40 40h78"/><path d="M842 724v78a40 40 0 0 1-40 40h-78"/>
+    </g>
+    <path d="M318 742L512 292L706 742" fill="none" stroke="#FFFFFF" stroke-width="104" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="512" cy="618" r="62" fill="url(#dot)"/>
+    <path d="M786 262l22 54 54 22-54 22-22 54-22-54-54-22 54-22z" fill="#FFD2B0"/>
+  </g>
+</svg>

@@ -7,7 +7,12 @@ function setTab(t){
   document.querySelectorAll('#ctabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===t)));
   document.querySelectorAll('.controls [data-tab]').forEach(p=>{p.hidden=p.dataset.tab!==t});
   if(t==='model')schedThumbs();
-  const fb=$('fab-export');if(fb)fb.hidden=(t==='export');
+  syncNav();
+}
+function syncNav(){
+  const vis=!$('view-visuel').hidden,ex=vis&&activeTab==='export';
+  const set=(id,on)=>{const el=$(id);if(!el)return;if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')};
+  set('tab-marque',!vis);set('tab-visuel',vis&&!ex);set('nav-export',ex);
 }
 function renderShowGroup(){
   const box=$('show-group');box.innerHTML='';
@@ -246,7 +251,7 @@ function buildVisuel(){
     el.addEventListener(t==='c'||el.tagName==='SELECT'?'change':'input',()=>{v[k]=t==='n'?+el.value:t==='c'?el.checked:el.value;
       if(['plate','logoShape','logoTint','tFont','bFont','filter'].includes(k))syncControls();schedule()});
   });
-  $('fab-export').addEventListener('click',()=>{setTab('export');const p=document.querySelector('.controls [data-tab=export]');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})});
+  $('nav-export').addEventListener('click',()=>{activeTab='export';if(location.hash!=='#visuel')location.hash='#visuel';else{setTab('export');window.scrollTo({top:0,behavior:'smooth'})}});
   $('ctabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.k)});
   $('brand-switch').addEventListener('change',e=>{const b=saved.find(s=>s.id===e.target.value);if(b)useBrand(b)});
   $('seg-format').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setFmt(b.dataset.k)});
@@ -318,9 +323,8 @@ function buildVisuel(){
 function route(){
   const name=location.hash==='#visuel'?'visuel':'marque';
   $('view-marque').hidden=name!=='marque';$('view-visuel').hidden=name!=='visuel';
-  ['marque','visuel'].forEach(n=>{const t=$('tab-'+n);if(n===name)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current')});
   if(name==='visuel'){syncVisualUI();setTab(activeTab);schedule()}
-  window.scrollTo(0,0);
+  syncNav();window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
 
