@@ -65,7 +65,7 @@ function setPlateDefault(){v.plate=current.hasAlpha?'none':'light';$('v-plate').
 function applyCharte(i){
   const ch=chartes[i];if(!ch)return;
   current.colors={...ch.colors};current.pair=ch.pair;current.logoPos=ch.logoPos;current.iconStyle=ch.iconStyle;current.charteIdx=i;
-  v.accent=null;syncBrandUI();syncVisualUI();schedule();
+  v.accent=null;v.tColor=null;syncBrandUI();syncVisualUI();schedule();
 }
 async function setLogoFromFile(file){
   try{
@@ -87,11 +87,12 @@ async function initDemo(){
   const ch=chartes[0];b.colors={...ch.colors};b.pair=ch.pair;b.logoPos=ch.logoPos;b.iconStyle=ch.iconStyle;
   current=b;
 }
+function resetOverrides(){v.accent=null;v.tColor=null;v.logoFree=null;v.dx=0;v.dy=0;v.logoRot=0;Object.values(v.pf).forEach(p=>{delete p.dx;delete p.dy;delete p.logoFree})}
 function useBrand(b){
-  current=clone(b);current.isDemo=false;chartes=genChartes(current.palette);v.accent=null;
+  current=clone(b);current.isDemo=false;chartes=genChartes(current.palette);resetOverrides();
   setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();
 }
-function newBrand(){initDemo().then(()=>{v.accent=null;setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();toast('Nouvelle marque : importez votre logo pour générer la charte.')})}
+function newBrand(){initDemo().then(()=>{resetOverrides();setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();toast('Nouvelle marque : importez votre logo pour générer la charte.')})}
 async function saveBrand(){
   if(current.isDemo){toast("Importez d'abord votre logo pour enregistrer une marque.");return}
   current.name=($('brand-name').value||'').trim()||'Ma marque';

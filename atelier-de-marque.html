@@ -243,6 +243,8 @@ textarea{font:inherit;width:100%;border-radius:12px;border:1px solid var(--line)
 .cats button{font:inherit;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:var(--muted)}
 .cats button small{opacity:.65;margin-left:3px}
 .cats button[aria-pressed="true"]{color:#FFE9D9;border-color:rgba(255,160,90,.7);background:rgba(255,138,61,.2)}
+.fab{display:none;position:fixed;right:14px;bottom:14px;z-index:20;font:inherit;font-weight:600;padding:12px 20px;border-radius:999px;border:1px solid rgba(255,160,90,.8);background:linear-gradient(180deg,#FF8A3D,#E2661E);color:#1a0d04;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
+@media (max-width:760px){.fab:not([hidden]){display:block}#view-marque~.fab{display:none}}
 .gal.tall{grid-template-columns:repeat(auto-fill,minmax(98px,1fr))}
 .gal.tall canvas{max-height:210px}
 input[type=text],input[type=tel],input[type=email]{min-width:0}
@@ -391,6 +393,7 @@ input[type=text],input[type=tel],input[type=email]{min-width:0}
             <a class="btn small" href="#marque">Modifier</a>
           </div>
         </div>
+        <button type="button" id="fab-export" class="fab" hidden>Exporter</button>
         <div id="ctabs" class="ctabs" role="group" aria-label="Réglages"></div>
 
         <div class="panel" data-tab="model">
@@ -2327,7 +2330,7 @@ function setPlateDefault(){v.plate=current.hasAlpha?'none':'light';$('v-plate').
 function applyCharte(i){
   const ch=chartes[i];if(!ch)return;
   current.colors={...ch.colors};current.pair=ch.pair;current.logoPos=ch.logoPos;current.iconStyle=ch.iconStyle;current.charteIdx=i;
-  v.accent=null;syncBrandUI();syncVisualUI();schedule();
+  v.accent=null;v.tColor=null;syncBrandUI();syncVisualUI();schedule();
 }
 async function setLogoFromFile(file){
   try{
@@ -2349,11 +2352,12 @@ async function initDemo(){
   const ch=chartes[0];b.colors={...ch.colors};b.pair=ch.pair;b.logoPos=ch.logoPos;b.iconStyle=ch.iconStyle;
   current=b;
 }
+function resetOverrides(){v.accent=null;v.tColor=null;v.logoFree=null;v.dx=0;v.dy=0;v.logoRot=0;Object.values(v.pf).forEach(p=>{delete p.dx;delete p.dy;delete p.logoFree})}
 function useBrand(b){
-  current=clone(b);current.isDemo=false;chartes=genChartes(current.palette);v.accent=null;
+  current=clone(b);current.isDemo=false;chartes=genChartes(current.palette);resetOverrides();
   setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();
 }
-function newBrand(){initDemo().then(()=>{v.accent=null;setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();toast('Nouvelle marque : importez votre logo pour générer la charte.')})}
+function newBrand(){initDemo().then(()=>{resetOverrides();setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();toast('Nouvelle marque : importez votre logo pour générer la charte.')})}
 async function saveBrand(){
   if(current.isDemo){toast("Importez d'abord votre logo pour enregistrer une marque.");return}
   current.name=($('brand-name').value||'').trim()||'Ma marque';
@@ -2453,6 +2457,7 @@ function setTab(t){
   document.querySelectorAll('#ctabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===t)));
   document.querySelectorAll('.controls [data-tab]').forEach(p=>{p.hidden=p.dataset.tab!==t});
   if(t==='model')schedThumbs();
+  const fb=$('fab-export');if(fb)fb.hidden=(t==='export');
 }
 function renderShowGroup(){
   const box=$('show-group');box.innerHTML='';
@@ -2490,8 +2495,8 @@ async function setPhotoFromFile(file){
   }catch(e){toast("Ce fichier n'a pas pu être lu comme image.")}
 }
 function setFmt(f){
-  v.pf[v.fmt]={zoom:v.zoom,fx:v.fx,fy:v.fy};v.fmt=f;fixTpl();renderGallery();
-  const p=v.pf[f]||{zoom:1,fx:.5,fy:.5};v.zoom=p.zoom;v.fx=p.fx;v.fy=p.fy;
+  v.pf[v.fmt]={zoom:v.zoom,fx:v.fx,fy:v.fy,dx:v.dx,dy:v.dy,logoFree:v.logoFree};v.fmt=f;fixTpl();renderGallery();
+  const p=v.pf[f]||{zoom:1,fx:.5,fy:.5};v.zoom=p.zoom;v.fx=p.fx;v.fy=p.fy;v.dx=p.dx||0;v.dy=p.dy||0;v.logoFree=p.logoFree||null;
   syncStageInfo();syncControls();schedule();
 }
 
@@ -2513,12 +2518,12 @@ function renderPresets(){
 /* ---------- export ---------- */
 let dl=null,lastUrl=null;
 async function renderTo(canvas,fmtKey,scale,tplOverride){
-  const f=FORMATS[fmtKey],snap={fmt:v.fmt,zoom:v.zoom,fx:v.fx,fy:v.fy,geom:v.geom,tpl:v.tpl};
-  const p=fmtKey===v.fmt?{zoom:v.zoom,fx:v.fx,fy:v.fy}:(v.pf[fmtKey]||{zoom:1,fx:.5,fy:.5});
-  v.fmt=fmtKey;v.zoom=p.zoom;v.fx=p.fx;v.fy=p.fy;
+  const f=FORMATS[fmtKey],snap={fmt:v.fmt,zoom:v.zoom,fx:v.fx,fy:v.fy,dx:v.dx,dy:v.dy,logoFree:v.logoFree,geom:v.geom,tpl:v.tpl};
+  const p=fmtKey===v.fmt?{zoom:v.zoom,fx:v.fx,fy:v.fy,dx:v.dx,dy:v.dy,logoFree:v.logoFree}:(v.pf[fmtKey]||{zoom:1,fx:.5,fy:.5});
+  v.fmt=fmtKey;v.zoom=p.zoom;v.fx=p.fx;v.fy=p.fy;v.dx=p.dx||0;v.dy=p.dy||0;v.logoFree=p.logoFree||null;
   canvas.width=Math.round(f.w*scale);canvas.height=Math.round(f.h*scale);
   try{await ensureFonts(curPair());draw(canvas.getContext('2d'),canvas.width,canvas.height,{tpl:tplOverride})}
-  finally{v.fmt=snap.fmt;v.zoom=snap.zoom;v.fx=snap.fx;v.fy=snap.fy;v.geom=snap.geom}
+  finally{v.fmt=snap.fmt;v.zoom=snap.zoom;v.fx=snap.fx;v.fy=snap.fy;v.dx=snap.dx;v.dy=snap.dy;v.logoFree=snap.logoFree;v.geom=snap.geom}
 }
 const toBlob=(cv,kind,q)=>new Promise(r=>cv.toBlob(r,kind==='png'?'image/png':'image/jpeg',q));
 const exScale=()=>+($('ex-scale').value||1),exQ=()=>+($('ex-q').value||.93);
@@ -2691,6 +2696,7 @@ function buildVisuel(){
     el.addEventListener(t==='c'||el.tagName==='SELECT'?'change':'input',()=>{v[k]=t==='n'?+el.value:t==='c'?el.checked:el.value;
       if(['plate','logoShape','logoTint','tFont','bFont','filter'].includes(k))syncControls();schedule()});
   });
+  $('fab-export').addEventListener('click',()=>{setTab('export');const p=document.querySelector('.controls [data-tab=export]');if(p)p.scrollIntoView({behavior:'smooth',block:'start'})});
   $('ctabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.k)});
   $('brand-switch').addEventListener('change',e=>{const b=saved.find(s=>s.id===e.target.value);if(b)useBrand(b)});
   $('seg-format').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setFmt(b.dataset.k)});
@@ -2773,6 +2779,7 @@ window.addEventListener('hashchange',route);
   await loadSaved();
   if(saved.length){current=clone(saved[0]);current.isDemo=false;chartes=genChartes(current.palette)}else{await initDemo()}
   buildStatic();setPlateDefault();syncBrandUI();renderChartes();renderSaved();syncVisualUI();syncStageInfo();setTab('model');route();schedule();
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null}catch(e){dl=null}
   
 })();

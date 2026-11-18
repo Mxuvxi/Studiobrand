@@ -31,6 +31,8 @@ textarea{font:inherit;width:100%;border-radius:12px;border:1px solid var(--line)
 .cats button{font:inherit;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:var(--muted)}
 .cats button small{opacity:.65;margin-left:3px}
 .cats button[aria-pressed="true"]{color:#FFE9D9;border-color:rgba(255,160,90,.7);background:rgba(255,138,61,.2)}
+.fab{display:none;position:fixed;right:14px;bottom:14px;z-index:20;font:inherit;font-weight:600;padding:12px 20px;border-radius:999px;border:1px solid rgba(255,160,90,.8);background:linear-gradient(180deg,#FF8A3D,#E2661E);color:#1a0d04;box-shadow:0 8px 24px rgba(0,0,0,.45);cursor:pointer}
+@media (max-width:760px){.fab:not([hidden]){display:block}#view-marque~.fab{display:none}}
 .gal.tall{grid-template-columns:repeat(auto-fill,minmax(98px,1fr))}
 .gal.tall canvas{max-height:210px}
 input[type=text],input[type=tel],input[type=email]{min-width:0}
