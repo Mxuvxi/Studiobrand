@@ -2,7 +2,7 @@
 /* ---------- rendu ---------- */
 const fontReady=new Set();
 async function ensureFonts(p){
-  const ids=[p.d,p.b,'AM_bigshoulders'],key=ids.join('|');if(fontReady.has(key))return;
+  const ids=[p.d,p.b,'AM_bigshoulders','AM_nothing'],key=ids.join('|');if(fontReady.has(key))return;
   try{await Promise.race([Promise.all(ids.map(f=>document.fonts.load(`40px "${f}"`)).concat([document.fonts.load(`700 24px "${p.b}"`)]).concat(['AM_poppins','AM_bricolage'].map(f=>document.fonts.load(`40px "${f}"`)))),new Promise(r=>setTimeout(r,2500))])}catch(e){}
   fontReady.add(key);
 }

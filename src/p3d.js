@@ -1,6 +1,8 @@
 
 function draw(ctx,W,H,opt){
-  opt=opt||{};const tpl=opt.tpl||v.tpl,main=!opt.thumb,kS=opt.k||1,ph=opt.thumb&&v.photoSm?v.photoSm:v.photo;
+  opt=opt||{};let tpl=opt.tpl||v.tpl;if(!tplOK(tpl,v.fmt))tpl=FALLBACK[v.fmt]||'affiche';
+  if(TPLS[tpl].custom)return drawCustom(ctx,W,H,opt,tpl);
+  const main=!opt.thumb,kS=opt.k||1,ph=opt.thumb&&v.photoSm?v.photoSm:v.photo;
   const b=current,C={...b.colors};if(v.accent)C.accent=v.accent;
   const base=Math.min(W,H),wide=W/H>1.5;
   const m=Math.round(base*.06*v.margin),safeY=v.fmt==='story'?Math.round(H*.09):0;

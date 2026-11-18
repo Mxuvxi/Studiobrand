@@ -44,7 +44,7 @@ async function setPhotoFromFile(file){
   }catch(e){toast("Ce fichier n'a pas pu être lu comme image.")}
 }
 function setFmt(f){
-  v.pf[v.fmt]={zoom:v.zoom,fx:v.fx,fy:v.fy};v.fmt=f;
+  v.pf[v.fmt]={zoom:v.zoom,fx:v.fx,fy:v.fy};v.fmt=f;fixTpl();renderGallery();
   const p=v.pf[f]||{zoom:1,fx:.5,fy:.5};v.zoom=p.zoom;v.fx=p.fx;v.fy=p.fy;
   syncStageInfo();syncControls();schedule();
 }
@@ -55,7 +55,7 @@ function applyStyle(s,full){
   const d=V0();
   if(full){PKEYS.forEach(k=>{v[k]=k in s?s[k]:d[k]})}
   else{RESET_KEYS.forEach(k=>{v[k]=d[k]});Object.assign(v,s)}
-  v.dx=0;v.dy=0;v.logoFree=null;syncStageInfo();syncControls();schedule();
+  v.dx=0;v.dy=0;v.logoFree=null;fixTpl();renderGallery();syncStageInfo();syncControls();schedule();
 }
 function renderPresets(){
   const box=$('presets');if(!box)return;
@@ -122,7 +122,7 @@ function makeZip(files){
 }
 async function exportZip(){
   const kind=$('ex-zipkind').value,files=[];
-  toast('Préparation des 5 formats…');
+  toast('Préparation des '+Object.keys(FORMATS).length+' formats…');
   for(const k of Object.keys(FORMATS)){
     const cv=document.createElement('canvas');await renderTo(cv,k,exScale());
     let blob;
@@ -197,7 +197,7 @@ const BIND=[
   ['p-zoom','zoom','n'],['p-fx','fx','n'],['p-fy','fy','n'],['p-flip','flip','c'],
   ['p-bright','bright','n'],['p-contr','contr','n'],['p-sat','sat','n'],['p-blur','blur','n'],['p-radius','radius','n'],['p-vig','vig','n'],['p-duo','duo','s'],['p-wash','wash','n'],['p-washc','washColor','s'],
   ['p-ov','ov','s'],['p-ovc','ovColor','s'],['p-ova','ovAmount','n'],
-  ['v-title','title','s'],['v-sub','sub','s'],['v-kicker','kicker','s'],['v-cta','cta','s'],['v-badge','badge','s'],['v-tags','tags','s'],
+  ['v-title','title','s'],['v-org','org','s'],['v-slogan','slogan','s'],['v-date','date','s'],['v-time','time','s'],['v-place','place','s'],['v-seca','secA','s'],['v-lista','listA','s'],['v-secb','secB','s'],['v-listb','listB','s'],['v-body','body','s'],['v-foot','foot','s'],['v-sub','sub','s'],['v-kicker','kicker','s'],['v-cta','cta','s'],['v-badge','badge','s'],['v-tags','tags','s'],
   ['t-font','tFont','s'],['t-bfont','bFont','s'],['t-upper','upper','s'],
   ['t-size','tSize','n'],['t-ssize','sSize','n'],['t-lh','lh','n'],['t-ls','ls','n'],['t-width','tWidth','n'],['t-bar','accentBar','c'],['t-hl','hl','c'],['t-effect','tEffect','s'],['t-box','tBox','s'],
   ['l-foot','footerPos','s'],['l-margin','margin','n'],
@@ -217,6 +217,15 @@ function syncControls(){
   $('filter-hint').hidden=CAN_FILTER;
   const cv=$('cv');if(cv)cv.style.cursor=v.drag==='photo'?'grab':'move';
 }
+let galCat='all';
+function renderGallery(){
+  const cats=$('tpl-cats'),gal=$('tpl-gal');if(!cats||!gal)return;
+  const ok=k=>tplOK(k,v.fmt),cnt=c=>Object.keys(TPLS).filter(k=>ok(k)&&(c==='all'||TPLS[k].cat===c)).length;
+  if(galCat!=='all'&&!cnt(galCat))galCat='all';
+  cats.innerHTML=CATS.filter(c=>cnt(c[0])).map(c=>`<button type="button" data-k="${c[0]}" aria-pressed="${c[0]===galCat}">${c[1]} <small>${cnt(c[0])}</small></button>`).join('');
+  gal.innerHTML=Object.entries(TPLS).filter(([k,t])=>ok(k)&&(galCat==='all'||t.cat===galCat)).map(([k,t])=>`<button type="button" data-k="${k}" aria-pressed="${k===v.tpl}" aria-label="Modèle ${t.label}"><canvas width="10" height="10"></canvas><span>${t.label}</span></button>`).join('');
+  const f=FORMATS[v.fmt];gal.classList.toggle('tall',f.h/f.w>1.25);
+}
 function buildVisuel(){
   const opts=l=>l.map(([k,t])=>`<option value="${k}">${t}</option>`).join('');
   const fontOpts=()=>{let h='<option value="auto">Selon la charte</option>';const cats=[...new Set(FONTS.slice(1).map(f=>f[2]))];
@@ -226,7 +235,7 @@ function buildVisuel(){
   $('p-duo').innerHTML=Object.entries(DUOS).map(([k,d])=>`<option value="${k}">${d[0]}</option>`).join('');
   $('ctabs').innerHTML=TABS.map(([k,t])=>`<button type="button" data-k="${k}" aria-pressed="false">${t}</button>`).join('');
   $('seg-format').innerHTML=Object.entries(FORMATS).map(([k,f])=>`<button type="button" data-k="${k}" aria-pressed="false">${f.label}</button>`).join('');
-  $('tpl-gal').innerHTML=Object.entries(TPLS).map(([k,t])=>`<button type="button" data-k="${k}" aria-pressed="false" aria-label="Modèle ${t.label}"><canvas width="10" height="10"></canvas><span>${t.label}</span></button>`).join('');
+  renderGallery();
   $('filters').innerHTML=Object.entries(FILTERS).map(([k,f])=>`<button type="button" data-k="${k}" aria-pressed="false">${f[0]}</button>`).join('');
   $('txtstyles').innerHTML=Object.entries(TXTSTYLES).map(([k,s])=>`<button type="button" data-k="${k}" aria-pressed="false">${s[0]}</button>`).join('');
   $('pos9').innerHTML=POS9.map(([ty,al,sym,lab])=>`<button type="button" data-ty="${ty}" data-al="${al}" aria-label="${lab}" aria-pressed="false">${sym}</button>`).join('');
@@ -239,6 +248,7 @@ function buildVisuel(){
   $('ctabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setTab(b.dataset.k)});
   $('brand-switch').addEventListener('change',e=>{const b=saved.find(s=>s.id===e.target.value);if(b)useBrand(b)});
   $('seg-format').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setFmt(b.dataset.k)});
+  $('tpl-cats').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;galCat=b.dataset.k;renderGallery();syncControls();schedThumbs()});
   $('tpl-gal').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.tpl=b.dataset.k;syncStageInfo();syncControls();schedule()});
   $('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.filter=b.dataset.k;syncControls();schedule()});
   $('txtstyles').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;Object.assign(v,TXT0,TXTSTYLES[b.dataset.k][1]);syncControls();schedule()});
@@ -268,7 +278,7 @@ function buildVisuel(){
   $('rand').addEventListener('click',()=>{
     const pick=a=>a[Math.floor(Math.random()*a.length)];
     const d=V0();RESET_KEYS.forEach(k=>{v[k]=d[k]});
-    v.tpl=pick(Object.keys(TPLS));v.filter=pick(Object.keys(FILTERS));
+    v.tpl=pick(Object.keys(TPLS).filter(k=>tplOK(k,v.fmt)));v.filter=pick(Object.keys(FILTERS));
     Object.assign(v,TXT0,pick(Object.values(TXTSTYLES))[1]);
     if(Math.random()<.3)v.duo=pick(['brand','warm','cool','mono','neon']);
     v.vig=pick([0,0,.25,.5]);v.align='auto';v.ty='auto';v.dx=0;v.dy=0;v.logoFree=null;

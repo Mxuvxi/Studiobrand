@@ -38,6 +38,8 @@ const FORMATS={
   post:{label:'Post carré',w:1080,h:1080,note:'Instagram, Facebook'},
   portrait:{label:'Post portrait',w:1080,h:1350,note:'Instagram 4:5'},
   story:{label:'Story',w:1080,h:1920,note:"Instagram, Facebook, WhatsApp. Le haut et le bas restent libres pour l'interface de l'application."},
+  affiche:{label:'Affiche 2:3',w:1080,h:1620,note:'Affiche, flyer, impression A4 ou A3'},
+  rollup:{label:'Roll-up',w:1080,h:2160,note:'Kakémono, roll-up 85 × 200 cm (ratio 1:2)'},
   linkedin:{label:'LinkedIn',w:1200,h:627,note:'Publication LinkedIn'},
   banniere:{label:'Bannière',w:1500,h:500,note:'En-tête de profil X ou LinkedIn'}
 };
@@ -68,6 +70,36 @@ const TPLS={
   etiquettes:{label:'Étiquettes',info:'Photo avec titre et étiquettes empilées.',tag:1},
   marque:{label:'Marque',info:'Grand logo centré sur la photo assombrie, titre court dessous.',tag:1}
 };
+const CATS=[['all','Tous'],['post','Post'],['affiche','Affiche'],['invitation','Invitation'],['promo','Promo'],['rollup','Roll-up'],['recrut','Recrutement'],['digital','Digital'],['citation','Citation']];
+const TALL=['portrait','affiche','story'],SQ=['post','portrait'];
+Object.entries({post:['bandeau','cadre','carte','split','minimal','centre','cercle','arche','lisere','bulle','vague','nuage','marque'],affiche:['affiche','magazine','panneau','courbe','diagonale'],invitation:['encoches'],promo:['offre','cartecta','ruban','etiquettes'],citation:['citation','conseil']}).forEach(([c,ks])=>ks.forEach(k=>{TPLS[k].cat=c}));
+/* modèles construits entièrement par code (voir CUSTOM) */
+const NEWT={
+  polaroid:['post','Polaroïd','Photo façon tirage instantané sur fond de couleur, légèrement inclinée.',SQ],
+  typo:['post','Typographique','Grand titre sur fond de couleur, photo en médaillon.',SQ],
+  coin:['post','Coin','Photo plein cadre, grand quart de cercle de couleur dans le coin avec le titre.',SQ.concat(['story'])],
+  bandes:['post','Bandes','Photo coupée en deux, bandes de couleur obliques et titre sur la bande.',SQ.concat(['story'])],
+  duo:['post','Duo','Deux photos côte à côte (la même, cadrée différemment), titre dessous.',SQ.concat(['story'])],
+  chiffre:['promo','Chiffre clé','Un grand chiffre ou prix (saisi dans « Pastille de promotion ») avec le titre.',SQ.concat(['story'])],
+  prix:['promo','Prix','Photo, grande étiquette de prix ou de réduction et liste d\'avantages.',SQ.concat(['affiche'])],
+  invit_nuit:['invitation','Invitation nuit','Invitation élégante sur fond sombre : titre, encadré date et heure, lieu.',TALL],
+  invit_rideau:['invitation','Invitation rideau','Photo teintée en haut, bandeau de date, lieu sur fond blanc.',SQ.concat(['affiche','story'])],
+  invit_gala:['invitation','Invitation gala','Photo teintée plein cadre, titre en gras, bandeau date et heure, lieu.',TALL],
+  invit_voile:['invitation','Invitation clair','Fond clair avec formes de couleur, grand titre, cases pointillées, date et lieu.',TALL],
+  evenement:['invitation','Événement','Photo sous un voile de couleur, titre, thème surligné, date, lieu et contacts.',SQ.concat(['affiche'])],
+  flyer_lancement:['affiche','Flyer lancement','En-tête de marque, titre en rubans, photo, texte de présentation, date, lieu.',['affiche','portrait']],
+  flyer_services:['affiche','Flyer services','Accroche, photo, services en icônes et liste « Pourquoi nous choisir ».',['affiche','portrait']],
+  infographie:['rollup','Infographie','Qui sommes-nous, domaines d\'expertise, valeurs et pied de marque.',['affiche','rollup']],
+  rollup_mission:['rollup','Roll-up mission','Logo et photo, grand nom, bandeau mission, objectifs, services et contacts.',['rollup','affiche']],
+  recrutement:['recrut','Recrutement','Annonce de poste : titre sur bloc de couleur, missions, profil recherché, contact.',SQ.concat(['affiche'])],
+  tech_sombre:['digital','Tech sombre','Fond sombre, titre dégradé, écran d\'ordinateur avec votre photo, cartes de services.',['affiche','portrait','rollup']],
+  tech_bureau:['digital','Tech bureau','Fond bleuté, titre centré, écran d\'ordinateur, cartes en verre et chiffres.',['affiche','portrait']]
+};
+Object.entries(NEWT).forEach(([k,a])=>{TPLS[k]={cat:a[0],label:a[1],info:a[2]+(['affiche','invitation','rollup','recrut','digital'].includes(a[0])?' Contenu à saisir dans l\'onglet Texte, « Contenu détaillé ».':''),fmts:a[3],custom:1,tag:1}});
+const tplOK=(t,f)=>!TPLS[t].fmts||TPLS[t].fmts.includes(f);
+const CUSTOM={};
+const FALLBACK={affiche:'affiche',rollup:'rollup_mission',story:'affiche',portrait:'affiche',post:'affiche',linkedin:'affiche',banniere:'affiche'};
+const fixTpl=()=>{if(!tplOK(v.tpl,v.fmt))v.tpl=FALLBACK[v.fmt]||'affiche'};
 const FONTS=[['auto','Selon la charte','']].concat(__FONTS__.map(f=>['AM_'+f.id,f.label,f.cat]));
 const FILTERS={none:['Naturel',''],bw:['Noir et blanc','grayscale(1) contrast(1.1)'],sepia:['Sépia','sepia(.85)'],warm:['Chaud','sepia(.25) saturate(1.3) hue-rotate(-8deg)'],cool:['Froid','saturate(1.05) hue-rotate(14deg) brightness(.98)'],contrast:['Contrasté','contrast(1.25) saturate(1.1)'],fade:['Délavé','contrast(.85) brightness(1.1) saturate(.8)'],vivid:['Vif','saturate(1.6) contrast(1.08)']};
 const DUOS={none:['Aucun'],brand:['Couleurs de la marque'],warm:['Chaud','#2B0F1E','#FFC48A'],cool:['Froid','#07203A','#9FE3F0'],mono:['Noir et crème','#0C0C0C','#F2EBDD'],neon:['Néon','#1A0B3D','#43F0D2']};
@@ -106,7 +138,7 @@ const DEFOPT=()=>({rm:false,tol:40,mode:'edge',bg:'#ffffff'});
 const DEMO_TAGS='Idée, Action, Résultat';
 
 let saved=[],current=null,chartes=[],presets=[];
-const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',
+const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',slogan:'',org:'',date:'',time:'',place:'',secA:'',listA:'',secB:'',listB:'',body:'',foot:'',
   tFont:'auto',bFont:'auto',tSize:1,sSize:1,lh:1,ls:0,tWidth:1,upper:'auto',tColor:null,tEffect:'none',tBox:'none',accentBar:true,hl:true,
   align:'auto',ty:'auto',dx:0,dy:0,margin:1,footerPos:'auto',icons:true,accent:null,
   logoScale:1,plate:'light',logoShape:'round',logoTint:'orig',logoOpacity:1,logoMargin:1,logoFree:null,shadow:true,logoRot:0,logoRad:1,logoGray:false,

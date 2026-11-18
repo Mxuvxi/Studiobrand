@@ -35,6 +35,7 @@
           <div class="pbody">
             <div id="seg-format" class="seg" role="group" aria-label="Format"></div>
             <h3 style="margin-top:6px">Modèle</h3>
+            <div id="tpl-cats" class="cats" role="group" aria-label="Catégories de modèles"></div>
             <div id="tpl-gal" class="gal" role="group" aria-label="Modèles"></div>
             <p class="hint" id="style-info"></p>
             <div><button class="btn small" id="rand" type="button">Proposer un style au hasard</button></div>
@@ -115,6 +116,28 @@
               <div class="field"><label for="v-tags">Étiquettes (séparées par des virgules)</label><input id="v-tags" type="text" maxlength="120" autocomplete="off" placeholder="Rapide, Local, Garanti"></div>
             </div>
             <p class="hint">Les modèles Offre, Conseil et Étiquettes proposent un exemple si ces champs sont vides. Tapez « - » pour le retirer.</p>
+          </div>
+        </div>
+        <div class="panel" data-tab="text" hidden>
+          <h3>Contenu détaillé (affiches, invitations, roll-up)</h3>
+          <div class="pbody">
+            <p class="hint">Ces champs servent aux modèles des catégories Affiche, Invitation, Roll-up, Recrutement et Digital. Laissez vide pour voir un exemple, tapez « - » pour retirer un élément.</p>
+            <div class="grid2">
+              <div class="field"><label for="v-org">Nom de l'organisation</label><input id="v-org" type="text" maxlength="60" autocomplete="off" placeholder="Par défaut : nom de la marque"></div>
+              <div class="field"><label for="v-slogan">Slogan ou phrase de fin</label><input id="v-slogan" type="text" maxlength="90" autocomplete="off" placeholder="Tous sont les bienvenus"></div>
+              <div class="field"><label for="v-date">Date</label><input id="v-date" type="text" maxlength="40" autocomplete="off" placeholder="Samedi 14 novembre 2026"></div>
+              <div class="field"><label for="v-time">Heure</label><input id="v-time" type="text" maxlength="24" autocomplete="off" placeholder="09h30"></div>
+            </div>
+            <div class="field"><label for="v-place">Lieu (ligne 1 | précision)</label><input id="v-place" type="text" maxlength="140" autocomplete="off" placeholder="Votre quartier, ville | Avenue, repère proche"></div>
+            <div class="field"><label for="v-foot">Phrase de pied de page, numéros</label><input id="v-foot" type="text" maxlength="120" autocomplete="off" placeholder="Votre confiance, notre engagement"></div>
+            <div class="field"><label for="v-body">Texte de présentation (titre | texte)</label><textarea id="v-body" rows="3" maxlength="420" placeholder="Notre mission | Mobiliser, accompagner, faire grandir…"></textarea></div>
+            <div class="grid2">
+              <div class="field"><label for="v-seca">Titre de la liste A</label><input id="v-seca" type="text" maxlength="40" autocomplete="off" placeholder="Nos services"></div>
+              <div class="field"><label for="v-secb">Titre de la liste B</label><input id="v-secb" type="text" maxlength="40" autocomplete="off" placeholder="Pourquoi nous choisir ?"></div>
+            </div>
+            <div class="field"><label for="v-lista">Liste A (une ligne par élément : Titre | description)</label><textarea id="v-lista" rows="4" placeholder="Épargne | Des solutions sûres&#10;Crédit | Des financements adaptés"></textarea></div>
+            <div class="field"><label for="v-listb">Liste B (une ligne par élément : Titre | description)</label><textarea id="v-listb" rows="4" placeholder="Une équipe à l'écoute&#10;Des services adaptés"></textarea></div>
+            <p class="hint">Astuce : ajoutez [calendar], [pin], [shield], [bulb]… devant une ligne pour choisir son icône.</p>
           </div>
         </div>
         <div class="panel" data-tab="text" hidden>
