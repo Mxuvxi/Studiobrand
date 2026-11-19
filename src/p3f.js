@@ -9,6 +9,22 @@ function drawCustom(ctx,W,H,opt,tpl){
   const base=Math.min(W,H),m=Math.round(base*.06*v.margin);
   const e={W,H,base,u:W,m,C:{...C,W,H},P:pal(C),pair:curPair(),items:footerItems(),main,thumb:!!opt.thumb,
     photo:(r,shape,rad)=>drawPhoto(ctx,ph,r,shape||'rect',rad||0,base,main,kS,C)};
+  e.pic=(i,r,shape,rad)=>{
+    const sp=slotPhoto(i,!!opt.thumb);
+    if(i===0||!sp){const keep=[v.zoom,v.fx,v.fy];if(i>0){v.zoom=1.25;v.fx=(.5+i*.37)%1;v.fy=.4}
+      const g=v.geom;drawPhoto(ctx,i===0?ph:ph,r,shape||'rect',rad||0,base,main&&i===0,kS,C);if(i>0)v.geom=g;[v.zoom,v.fx,v.fy]=keep;return}
+    const a=v.extra[i-1],keep=[v.zoom,v.fx,v.fy,v.flip],g=v.geom;v.zoom=a.zoom;v.fx=a.fx;v.fy=a.fy;v.flip=false;
+    drawPhoto(ctx,sp,r,shape||'rect',rad||0,base,false,kS,C);v.zoom=keep[0];v.fx=keep[1];v.fy=keep[2];v.flip=keep[3];v.geom=g};
+  e.hasCut=i=>!!slotCut(i);
+  e.cut=(i,b,o)=>{o=o||{};const c=slotCut(i);if(!c)return false;
+    const sc=Math.min(b.w/c.width,b.h/c.height)*(o.scale||1),w=c.width*sc,h=c.height*sc,x=b.x+(b.w-w)*(o.ax==null?.5:o.ax),y=o.top?b.y:b.y+b.h-h;
+    ctx.save();
+    if(o.flip){ctx.translate(x*2+w,0);ctx.scale(-1,1)}
+    if(o.outline){const t=tinted(c,o.outline),n=14,r=o.ow||base*.008;for(let k=0;k<n;k++){const an=k/n*Math.PI*2;ctx.drawImage(t,x+Math.cos(an)*r,y+Math.sin(an)*r,w,h)}}
+    if(o.shadow){ctx.shadowColor='rgba(0,0,0,.38)';ctx.shadowBlur=base*.03;ctx.shadowOffsetY=base*.012}
+    ctx.drawImage(c,x,y,w,h);ctx.restore();return{x,y,w,h}};
+  e.who=(i,b,o,shape)=>{o=o||{};if(e.hasCut(i)&&!o.noCut)return e.cut(i,b,o);
+    const s=Math.min(b.w,b.h*.9),r={x:b.x+(b.w-s)/2,y:b.y+b.h-s,w:s,h:s};e.pic(i,r,shape||'circle');return r};
   e.C.W=W;e.C.H=H;e.W=W;e.H=H;
   ctx.save();ctx.clearRect(0,0,W,H);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   try{CUSTOM[tpl](ctx,e,cdata(e,DEMO[tpl]||D0))}catch(err){console.error(tpl,err);ctx.fillStyle='#222';ctx.fillRect(0,0,W,H)}

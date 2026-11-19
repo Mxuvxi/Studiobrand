@@ -61,6 +61,8 @@
               <input id="photo-file" class="sr" type="file" accept="image/*">
               <span id="photo-tag" class="tag">Photo d'exemple</span>
             </div>
+            <div class="field"><span class="lbl">Photos du visuel</span><div id="slots" class="slots"></div><input id="slot-file" class="sr" type="file" accept="image/*"></div>
+            <p class="hint">« Détourer » retire le fond d'une personne pour la placer devant les titres, comme sur les affiches de webinaire.</p>
             <p class="hint">Le cadrage est mémorisé séparément pour chaque format.</p>
             <div class="grid2">
               <div class="field"><label for="p-zoom">Zoom</label><input id="p-zoom" type="range" min="1" max="3" step="0.01" value="1"></div>
@@ -124,6 +126,7 @@
           <div class="pbody">
             <p class="hint">Ces champs servent aux modèles des catégories Affiche, Invitation, Roll-up, Recrutement et Digital. Laissez vide pour voir un exemple, tapez « - » pour retirer un élément.</p>
             <div class="grid2">
+              <div class="field"><label for="v-person">Intervenant (nom | fonction)</label><input id="v-person" type="text" maxlength="80" autocomplete="off" placeholder="Awa Diallo | Directrice marketing"></div>
               <div class="field"><label for="v-org">Nom de l'organisation</label><input id="v-org" type="text" maxlength="60" autocomplete="off" placeholder="Par défaut : nom de la marque"></div>
               <div class="field"><label for="v-slogan">Slogan ou phrase de fin</label><input id="v-slogan" type="text" maxlength="90" autocomplete="off" placeholder="Tous sont les bienvenus"></div>
               <div class="field"><label for="v-date">Date</label><input id="v-date" type="text" maxlength="40" autocomplete="off" placeholder="Samedi 14 novembre 2026"></div>
@@ -272,5 +275,15 @@
   <p>Faites un clic droit sur l'image (ou un appui long sur téléphone), puis choisissez « Enregistrer l'image ».</p>
   <img id="ov-img" alt="Visuel exporté">
   <button class="btn primary" id="ov-close" type="button">Fermer</button>
+</div>
+<div id="cutov" class="ov cutov" hidden role="dialog" aria-label="Détourer une personne">
+  <div class="cut-box">
+    <canvas id="cutcv"></canvas>
+    <p id="cut-state" class="hint">Détection…</p>
+    <div id="cut-tools" class="seg"><button type="button" data-t="keep" aria-pressed="true">+ Garder</button><button type="button" data-t="erase" aria-pressed="false">− Effacer</button></div>
+    <div class="grid2"><label>Taille du pinceau<input id="cut-size" type="range" min="8" max="90" value="34"></label><label>Bords adoucis<input id="cut-feather" type="range" min="0" max="4" step="0.5" value="1"></label><label>Tolérance fond uni<input id="cut-tol" type="range" min="15" max="120" value="55"></label></div>
+    <div class="row"><button class="btn small" id="cut-auto" type="button">Détection auto</button><button class="btn small" id="cut-flood" type="button">Fond uni</button><button class="btn small" id="cut-undo" type="button">Annuler</button><button class="btn small" id="cut-reset" type="button">Tout garder</button></div>
+    <div class="row"><button class="btn primary" id="cut-ok" type="button">Valider</button><button class="btn" id="cut-cancel" type="button">Fermer</button></div>
+  </div>
 </div>
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>

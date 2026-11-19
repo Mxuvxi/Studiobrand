@@ -70,11 +70,21 @@ const TPLS={
   etiquettes:{label:'Étiquettes',info:'Photo avec titre et étiquettes empilées.',tag:1},
   marque:{label:'Marque',info:'Grand logo centré sur la photo assombrie, titre court dessous.',tag:1}
 };
-const CATS=[['all','Tous'],['post','Post'],['affiche','Affiche'],['invitation','Invitation'],['promo','Promo'],['rollup','Roll-up'],['recrut','Recrutement'],['digital','Digital'],['citation','Citation']];
+const CATS=[['all','Tous'],['post','Post'],['affiche','Affiche'],['invitation','Invitation'],['promo','Promo'],['rollup','Roll-up'],['recrut','Recrutement'],['digital','Digital'],['citation','Citation'],['multi','Multi-photos']];
 const TALL=['portrait','affiche','story'],SQ=['post','portrait'];
 Object.entries({post:['bandeau','cadre','carte','split','minimal','centre','cercle','arche','lisere','bulle','vague','nuage','marque'],affiche:['affiche','magazine','panneau','courbe','diagonale'],invitation:['encoches'],promo:['offre','cartecta','ruban','etiquettes'],citation:['citation','conseil']}).forEach(([c,ks])=>ks.forEach(k=>{TPLS[k].cat=c}));
 /* modèles construits entièrement par code (voir CUSTOM) */
 const NEWT={
+  webinaire:['digital','Webinaire','Intervenant détouré devant une forme colorée, thème, date, heure et lieu. Champ « Intervenant » dans l\'onglet Texte ; photo à détourer dans l\'onglet Photo.',SQ.concat(['affiche','story']),1],
+  urbain:['affiche','Affiche urbaine','Grand titre, décor de ville, deux personnes détourées, ruban et cases date et heure.',['portrait','affiche','story'],2],
+  soleil:['affiche','Soleil','Grand titre derrière la personne détourée, disque de soleil, infos sur les côtés et mots-clés.',['portrait','affiche','story'],1],
+  trio:['multi','Trio','Trois photos en colonnes avec légendes (mots-clés), titre en haut.',SQ.concat(['affiche','story']),3],
+  collage2:['multi','Collage','Deux photos façon tirages superposés, titre dessous.',SQ.concat(['affiche','story']),2],
+  avant_apres:['multi','Avant / Après','Deux photos côte à côte avec étiquettes Avant et Après, titre en bandeau.',SQ.concat(['affiche','story']),2],
+  grille4:['multi','Grille de 4','Quatre photos en grille avec le titre au centre.',SQ.concat(['affiche']),4],
+  equipe:['multi','Équipe','Trois portraits en cercle avec noms et fonctions (saisis dans « Liste A », un par ligne : Nom | fonction).',SQ.concat(['affiche']),3],
+  duo_cut:['multi','Duo détouré','Deux personnes détourées sur fond de couleur, noms en bandeaux.',SQ.concat(['affiche','story']),2],
+  trio_cut:['multi','Trio détouré','Trois personnes détourées, celle du milieu plus grande, noms en bandeaux.',SQ.concat(['affiche','story']),3],
   polaroid:['post','Polaroïd','Photo façon tirage instantané sur fond de couleur, légèrement inclinée.',SQ],
   typo:['post','Typographique','Grand titre sur fond de couleur, photo en médaillon.',SQ],
   coin:['post','Coin','Photo plein cadre, grand quart de cercle de couleur dans le coin avec le titre.',SQ.concat(['story'])],
@@ -95,7 +105,7 @@ const NEWT={
   tech_sombre:['digital','Tech sombre','Fond sombre, titre dégradé, écran d\'ordinateur avec votre photo, cartes de services.',['affiche','portrait','rollup']],
   tech_bureau:['digital','Tech bureau','Fond bleuté, titre centré, écran d\'ordinateur, cartes en verre et chiffres.',['affiche','portrait']]
 };
-Object.entries(NEWT).forEach(([k,a])=>{TPLS[k]={cat:a[0],label:a[1],info:a[2]+(['affiche','invitation','rollup','recrut','digital'].includes(a[0])?' Contenu à saisir dans l\'onglet Texte, « Contenu détaillé ».':''),fmts:a[3],custom:1,tag:1}});
+Object.entries(NEWT).forEach(([k,a])=>{TPLS[k]={cat:a[0],label:a[1],info:a[2]+(['affiche','invitation','rollup','recrut','digital'].includes(a[0])?' Contenu à saisir dans l\'onglet Texte, « Contenu détaillé ».':''),fmts:a[3],custom:1,tag:1,photos:a[4]||1}});
 const tplOK=(t,f)=>!TPLS[t].fmts||TPLS[t].fmts.includes(f);
 const CUSTOM={};
 const FALLBACK={affiche:'affiche',rollup:'rollup_mission',story:'affiche',portrait:'affiche',post:'affiche',linkedin:'affiche',banniere:'affiche'};
@@ -138,7 +148,7 @@ const DEFOPT=()=>({rm:false,tol:40,mode:'edge',bg:'#ffffff'});
 const DEMO_TAGS='Idée, Action, Résultat';
 
 let saved=[],current=null,chartes=[],presets=[];
-const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',slogan:'',org:'',date:'',time:'',place:'',secA:'',listA:'',secB:'',listB:'',body:'',foot:'',
+const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',slogan:'',org:'',person:'',date:'',time:'',place:'',secA:'',listA:'',secB:'',listB:'',body:'',foot:'',
   tFont:'auto',bFont:'auto',tSize:1,sSize:1,lh:1,ls:0,tWidth:1,upper:'auto',tColor:null,tEffect:'none',tBox:'none',accentBar:true,hl:true,
   align:'auto',ty:'auto',dx:0,dy:0,margin:1,footerPos:'auto',icons:true,accent:null,
   logoScale:1,plate:'light',logoShape:'round',logoTint:'orig',logoOpacity:1,logoMargin:1,logoFree:null,shadow:true,logoRot:0,logoRad:1,logoGray:false,

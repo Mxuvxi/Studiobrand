@@ -101,7 +101,7 @@ function cdata(e,demo){
   return{kicker:g('kicker',demo.kicker),cta:g('cta',demo.cta),badge:g('badge',demo.badge),slogan:g('slogan',demo.slogan),org:g('org',current?current.name:'')||demo.org||'',
     tags:g('tags',demo.tags).split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,8),
     date:dt,wd:mt?mt[1]:'',day:dm?dm[1]:rest,mon:dm?dm[2]:'',time:g('time',demo.time),place:prSplit(g('place',demo.place)),
-    foot:g('foot',demo.foot),secA:g('secA',demo.secA),secB:g('secB',demo.secB),listA:parseList(g('listA',demo.listA),8),listB:parseList(g('listB',demo.listB),8),body:prSplit(g('body',demo.body))};
+    foot:g('foot',demo.foot),person:(()=>{const s=g('person',demo.person).split('|');return{n:(s[0]||'').trim(),r:(s[1]||'').trim()}})(),secA:g('secA',demo.secA),secB:g('secB',demo.secB),listA:parseList(g('listA',demo.listA),8),listB:parseList(g('listB',demo.listB),8),body:prSplit(g('body',demo.body))};
 }
 /* ---------- blocs ---------- */
 const bGap=h=>({h,paint(){}});

@@ -13,7 +13,7 @@ assert "case'city'" in glyph
 assert 'rows.length<=o.maxRows&&Math.max' in glyph
 glyph=glyph.replace('rows.length<=o.maxRows&&Math.max','rows.length<=(f>=.78?Math.min(o.maxRows,2):o.maxRows)&&Math.max')
 glyph=glyph.replace("['facebook','instagram','linkedin','x','tiktok','youtube']","['facebook','instagram','linkedin','x','tiktok','youtube','snapchat','pinterest']")
-js='\n'.join([sl(1,8),sl(11,25),p1,sl(91,202),open('p3a.js').read(),glyph,open('p3b.js').read(),open('p3c.js').read(),open('p3e.js').read(),open('p3f.js').read(),open('p3d.js').read(),open('p4a.js').read(),open('p4b.js').read()])
+js='\n'.join([sl(1,8),sl(11,25),p1,sl(91,202),open('p3a.js').read(),glyph,open('p3b.js').read(),open('p3c.js').read(),open('p3e.js').read(),open('p3f.js').read(),open('p3g.js').read(),open('p3d.js').read(),open('p5a.js').read(),open('p4a.js').read(),open('p4b.js').read()])
 open('app.js','w').write(js)
 body=open('old_body.html').read().split('\n')
 mq='\n'.join(body[:111])
@@ -66,6 +66,15 @@ input[type=text],input[type=tel],input[type=email],input[type=url],input:not([ty
 .gal.tall{grid-template-columns:repeat(auto-fill,minmax(98px,1fr))}
 .gal.tall canvas{max-height:210px}
 input[type=text],input[type=tel],input[type=email]{min-width:0}
+.slots{display:flex;flex-direction:column;gap:10px}
+.slot{display:flex;gap:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--glass)}
+.slot-th{width:64px;height:64px;border-radius:10px;flex:none}
+.slot-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}.slot-main small{color:var(--muted)}
+.slot-btns{display:flex;flex-wrap:wrap;gap:6px}.slot-adj{margin-top:4px}
+.slot-add{display:flex;flex-direction:column;gap:6px;align-items:flex-start}.slot-add small{color:var(--muted)}
+.cutov{z-index:70;overflow:auto;justify-content:flex-start;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+.cut-box{width:min(100%,460px);display:flex;flex-direction:column;gap:10px}
+#cutcv{width:100%;max-height:52dvh;object-fit:contain;border-radius:10px;touch-action:none;background:#888;cursor:crosshair}
 '''
 fc=open('fonts.css').read()
 

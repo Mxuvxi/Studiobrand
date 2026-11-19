@@ -8,7 +8,7 @@ async function ensureFonts(p){
 }
 function curPair(){const pb=PAIRS[current.pair]||PAIRS[0];return{d:v.tFont==='auto'?pb.d:v.tFont,b:v.bFont==='auto'?pb.b:v.bFont}}
 function mkSm(ph){const r=Math.min(1,560/Math.max(ph.w,ph.h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(ph.w*r));c.height=Math.max(1,Math.round(ph.h*r));c.getContext('2d').drawImage(ph.src,0,0,c.width,c.height);return{src:c,w:c.width,h:c.height}}
-function setPhoto(c){v.photo={src:c,w:c.width,h:c.height};v.photoSm=mkSm(v.photo);v.pf={};v.zoom=1;v.fx=.5;v.fy=.5}
+function setPhoto(c){v.photo={src:c,w:c.width,h:c.height};v.photoSm=mkSm(v.photo);v.pf={};v.zoom=1;v.fx=.5;v.fy=.5;v.cut=null;try{renderSlots()}catch(_){}}
 let raf=0;
 function schedule(){if(!raf)raf=requestAnimationFrame(()=>{raf=0;render()})}
 async function render(){
