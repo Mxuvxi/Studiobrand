@@ -18,16 +18,22 @@ function drawCustom(ctx,W,H,opt,tpl){
   e.hasCut=i=>!!slotCut(i);
   e.cut=(i,b,o)=>{o=o||{};const c=slotCut(i);if(!c)return false;
     const sc=Math.min(b.w/c.width,b.h/c.height)*(o.scale||1),w=c.width*sc,h=c.height*sc,x=b.x+(b.w-w)*(o.ax==null?.5:o.ax),y=o.top?b.y:b.y+b.h-h;
-    ctx.save();
+    if(hid('cut'+i))return{x,y,w,h};
+    elPaint(ctx,'cut'+i,{x,y,w,h,al:'center'},()=>{ctx.save();
     if(o.flip){ctx.translate(x*2+w,0);ctx.scale(-1,1)}
     if(o.outline){const t=tinted(c,o.outline),n=14,r=o.ow||base*.008;for(let k=0;k<n;k++){const an=k/n*Math.PI*2;ctx.drawImage(t,x+Math.cos(an)*r,y+Math.sin(an)*r,w,h)}}
     if(o.shadow){ctx.shadowColor='rgba(0,0,0,.38)';ctx.shadowBlur=base*.03;ctx.shadowOffsetY=base*.012}
-    ctx.drawImage(c,x,y,w,h);ctx.restore();return{x,y,w,h}};
+    ctx.drawImage(c,x,y,w,h);ctx.restore()});return{x,y,w,h}};
   e.who=(i,b,o,shape)=>{o=o||{};if(e.hasCut(i)&&!o.noCut)return e.cut(i,b,o);
     const s=Math.min(b.w,b.h*.9),r={x:b.x+(b.w-s)/2,y:b.y+b.h-s,w:s,h:s};e.pic(i,r,shape||'circle');return r};
   e.C.W=W;e.C.H=H;e.W=W;e.H=H;
   ctx.save();ctx.clearRect(0,0,W,H);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
   try{CUSTOM[tpl](ctx,e,cdata(e,DEMO[tpl]||D0))}catch(err){console.error(tpl,err);ctx.fillStyle='#222';ctx.fillRect(0,0,W,H)}
+  try{
+    if(!e._logo&&!hid('logo')){const pos=b.logoPos||'tl',al=pos[1]==='r'?'r':pos[1]==='c'?'c':'l',lh=base*.1,lb=bLogo(ctx,e,m,W-2*m,lh,al);lb.paint(pos[0]==='b'?H-m*.7-lb.h:m*.7)}
+    const fo=EO('foot');
+    if(!e._foot&&fo&&fo.add&&!fo.hide&&e.items.length){const fb=bFoot(ctx,e,m,W-2*m,{z:e.u*.04,a:'center',fg:'#FFFFFF',rows:2}),fy=H-m*.6-fb.h;ctx.save();ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,fy-m*.35,W,fb.h+m*.7);ctx.restore();fb.paint(fy)}
+  }catch(err){console.error('éléments',err)}
   ctx.restore();
 }
 /* blocs communs */

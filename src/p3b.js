@@ -105,7 +105,7 @@ function drawBadge(ctx,e,text){
   const cx=side==='r'?W-m-R*.9:m+R*.9,cy=(pos[0]==='b'?safeY+m+R*.95:H-safeY-m-R*.95-(pos[0]==='t'?0:0));
   const cyy=pos[0]==='b'?cy:(pos[1]==='c'?safeY+m+R*.95:cy);
   const y=pos[0]==='t'&&pos[1]!=='c'?safeY+m+R*.95+base*.06:cyy;
-  ctx.save();ctx.translate(cx,y);ctx.rotate(-.17);
+  ctx.save();{const eo=EO('badge'),ddx=(eo&&eo.dx||0)*W,ddy=(eo&&eo.dy||0)*H,ss=eo&&eo.s||1;ctx.translate(ddx,ddy);ctx.translate(cx,y);ctx.scale(ss,ss);if(DRAW.rec)v.hits.push({id:'badge',x:cx+ddx-R*ss,y:y+ddy-R*ss,w:2*R*ss,h:2*R*ss})}ctx.rotate(-.17);
   ctx.shadowColor='rgba(0,0,0,.3)';ctx.shadowBlur=base*.03;ctx.shadowOffsetY=base*.008;
   ctx.fillStyle=C.accent;burst(ctx,0,0,R,14,.86);ctx.fill();ctx.shadowColor='transparent';
   const words=text.trim().split(/\s+/),big=words[0],rest=words.slice(1).join(' ');

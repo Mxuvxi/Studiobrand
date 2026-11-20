@@ -1,7 +1,7 @@
 
 /* ---------- interface : visuel ---------- */
 let activeTab='model';
-const TABS=[['model','Modèle'],['photo','Photo'],['text','Texte'],['logo','Logo'],['layout','Disposition'],['export','Exporter']];
+const TABS=[['model','Modèle'],['photo','Photo'],['text','Texte'],['logo','Logo'],['elements','Éléments'],['layout','Disposition'],['export','Exporter']];
 function setTab(t){
   activeTab=t;
   document.querySelectorAll('#ctabs button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===t)));
@@ -257,11 +257,11 @@ function buildVisuel(){
   $('brand-switch').addEventListener('change',e=>{const b=saved.find(s=>s.id===e.target.value);if(b)useBrand(b)});
   $('seg-format').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setFmt(b.dataset.k)});
   $('tpl-cats').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;galCat=b.dataset.k;renderGallery();syncControls();schedThumbs()});
-  $('tpl-gal').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.tpl=b.dataset.k;syncStageInfo();syncControls();schedule()});
+  $('tpl-gal').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(v.tpl!==b.dataset.k){const f=v.elo[v.fmt]||{};Object.values(f).forEach(o=>{delete o.dx;delete o.dy;delete o.s});v.dx=0;v.dy=0}v.tpl=b.dataset.k;syncStageInfo();syncControls();schedule()});
   $('filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.filter=b.dataset.k;syncControls();schedule()});
   $('txtstyles').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;Object.assign(v,TXT0,TXTSTYLES[b.dataset.k][1]);syncControls();schedule()});
   $('pos9').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.ty=b.dataset.ty;v.align=b.dataset.al;syncControls();schedule()});
-  $('drag-seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.drag=b.dataset.k;syncControls()});
+  $('drag-seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;v.drag=b.dataset.k;syncControls();schedule()});
   $('ins-info').addEventListener('change',e=>{const k=e.target.value;if(!k)return;v.sub=k==='name'?current.name:(current.info[k]||'');$('v-sub').value=v.sub;e.target.value='';schedule()});
   $('v-pos').addEventListener('change',e=>{current.logoPos=e.target.value;v.logoFree=null;$('b-pos').value=e.target.value;current.charteIdx=-1;schedule()});
   $('v-accent').addEventListener('input',e=>{v.accent=e.target.value;schedule()});
@@ -330,13 +330,13 @@ function route(){
 window.addEventListener('hashchange',route);
 
 (async function init(){
-  try{wireCut();wireSlots();renderSlots()}catch(err){console.error(err)}
+  try{wireCut();wireSlots();renderSlots();elWire();syncFootUI();elUI()}catch(err){console.error(err)}
   setPhoto(makeSamplePhoto().src);
   await loadSaved();
   if(saved.length){current=clone(saved[0]);current.isDemo=false;chartes=genChartes(current.palette)}else{await initDemo()}
   buildStatic();setPlateDefault();syncBrandUI();renderChartes();renderSaved();syncVisualUI();syncStageInfo();setTab('model');route();schedule();
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null}catch(e){dl=null}
-  window.__atelier={v,draw,TPLS,FORMATS,sampleCut,cutOpen,cutFinish,CUT,get current(){return current}};
+  window.__atelier={v,draw,TPLS,FORMATS,tplOK,current:()=>current,sampleCut,cutOpen,cutFinish,CUT,get current(){return current}};
 })();
 })();

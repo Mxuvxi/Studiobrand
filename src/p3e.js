@@ -96,7 +96,8 @@ function parseList(str,max){
 const prSplit=s=>{s=String(s||'');const i=s.indexOf('|');return i<0?{t:s.trim(),d:''}:{t:s.slice(0,i).trim(),d:s.slice(i+1).trim()}};
 function cdata(e,demo){
   demo=demo||{};
-  const g=(k,df)=>{const s=String(v[k]||'').trim();if(s==='-')return'';return s||df||''};
+  const HK={kicker:'kicker',cta:'cta',badge:'badge',tags:'tags',date:'date',time:'date',place:'place',person:'person',body:'body',secA:'lists',secB:'lists',listA:'lists',listB:'lists'};
+  const g=(k,df)=>{if(HK[k]&&hid(HK[k]))return'';const s=String(v[k]||'').trim();if(s==='-')return'';return s||df||''};
   const dt=g('date',demo.date),mt=dt.match(/^(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)\s+(.+)$/i),rest=mt?mt[2]:dt,dm=rest.match(/^(\d{1,2}(?:er)?)\s+(.+)$/);
   return{kicker:g('kicker',demo.kicker),cta:g('cta',demo.cta),badge:g('badge',demo.badge),slogan:g('slogan',demo.slogan),org:g('org',current?current.name:'')||demo.org||'',
     tags:g('tags',demo.tags).split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,8),

@@ -71,10 +71,12 @@ const TPLS={
   marque:{label:'Marque',info:'Grand logo centré sur la photo assombrie, titre court dessous.',tag:1}
 };
 const CATS=[['all','Tous'],['post','Post'],['affiche','Affiche'],['invitation','Invitation'],['promo','Promo'],['rollup','Roll-up'],['recrut','Recrutement'],['digital','Digital'],['citation','Citation'],['multi','Multi-photos']];
+CATS.splice(1,0,['libre','Libre']);
 const TALL=['portrait','affiche','story'],SQ=['post','portrait'];
 Object.entries({post:['bandeau','cadre','carte','split','minimal','centre','cercle','arche','lisere','bulle','vague','nuage','marque'],affiche:['affiche','magazine','panneau','courbe','diagonale'],invitation:['encoches'],promo:['offre','cartecta','ruban','etiquettes'],citation:['citation','conseil']}).forEach(([c,ks])=>ks.forEach(k=>{TPLS[k].cat=c}));
 /* modèles construits entièrement par code (voir CUSTOM) */
 const NEWT={
+  libre:['libre','Composition libre','Point de départ vierge : photo plein cadre, puis gérez chaque élément (logo, titre, date, lieu, bouton, coordonnées, personne détourée) dans l\'onglet Éléments.',SQ.concat(['affiche','story','rollup','linkedin','banniere']),1],
   webinaire:['digital','Webinaire','Intervenant détouré devant une forme colorée, thème, date, heure et lieu. Champ « Intervenant » dans l\'onglet Texte ; photo à détourer dans l\'onglet Photo.',SQ.concat(['affiche','story']),1],
   urbain:['affiche','Affiche urbaine','Grand titre, décor de ville, deux personnes détourées, ruban et cases date et heure.',['portrait','affiche','story'],2],
   soleil:['affiche','Soleil','Grand titre derrière la personne détourée, disque de soleil, infos sur les côtés et mots-clés.',['portrait','affiche','story'],1],

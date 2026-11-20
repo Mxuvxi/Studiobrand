@@ -15,6 +15,7 @@
             <button type="button" data-k="photo" aria-pressed="true">Photo</button>
             <button type="button" data-k="logo" aria-pressed="false">Logo</button>
             <button type="button" data-k="text" aria-pressed="false">Texte</button>
+            <button type="button" data-k="el" aria-pressed="false">Éléments</button>
           </div>
         </div>
         <p class="hint" id="stage-info" style="text-align:center"></p>
@@ -235,6 +236,35 @@
           </div>
         </div>
 
+        <div class="panel" data-tab="elements" hidden>
+          <h3>Éléments du visuel</h3>
+          <div class="pbody">
+            <p class="hint">Touchez un élément ici, ou sur l'aperçu avec « Glisser : Éléments », puis déplacez-le, changez sa taille ou masquez-le. Chaque format garde ses propres positions.</p>
+            <div id="el-list" class="el-list"></div>
+            <div id="el-edit" class="el-edit" hidden>
+              <b id="el-t"></b>
+              <div id="el-mv" class="grid2">
+                <label>Horizontal<input id="el-x" type="range" min="-0.5" max="0.5" step="0.005" value="0"></label>
+                <label>Vertical<input id="el-y" type="range" min="-0.5" max="0.5" step="0.005" value="0"></label>
+                <label>Taille<input id="el-s" type="range" min="0.3" max="2.5" step="0.05" value="1"></label>
+              </div>
+              <div class="row"><button class="btn small" id="el-eye2" type="button">Masquer</button><button class="btn small" id="el-reset1" type="button">Remettre cet élément</button></div>
+            </div>
+            <div class="row"><button class="btn small" id="el-reset" type="button">Tout remettre comme dans le modèle</button></div>
+          </div>
+        </div>
+        <div class="panel" data-tab="elements" hidden>
+          <h3>Disposition des coordonnées</h3>
+          <div class="pbody">
+            <div class="grid2">
+              <div class="field"><label for="f-mode">Présentation</label><select id="f-mode"><option value="auto">Automatique</option><option value="row">Sur une seule ligne</option><option value="col">En colonne (une par ligne)</option><option value="icons">Icônes seules, sans texte</option></select></div>
+              <div class="field"><label for="f-align">Alignement</label><select id="f-align"><option value="auto">Selon le modèle</option><option value="left">À gauche</option><option value="center">Centré</option><option value="right">À droite</option></select></div>
+              <div class="field"><label for="f-size">Taille</label><input id="f-size" type="range" min="0.4" max="1.6" step="0.05" value="1"></div>
+            </div>
+            <div class="row"><span class="lbl">Couleur</span><input type="color" id="f-col" aria-label="Couleur des coordonnées" value="#ffffff"><button class="btn small" id="f-col-reset" type="button">Couleur du modèle</button><button class="btn small" id="f-reset" type="button">Réinitialiser</button></div>
+            <p class="hint">Choisissez quelles informations apparaissent dans l'onglet Disposition, « Coordonnées en bas du visuel ». Si le modèle n'a pas de ligne de coordonnées, « Afficher » sur l'élément l'ajoute en bas.</p>
+          </div>
+        </div>
         <div class="panel" data-tab="export" hidden>
           <h3>Exporter</h3>
           <div class="pbody">

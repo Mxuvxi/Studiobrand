@@ -87,7 +87,7 @@ async function initDemo(){
   const ch=chartes[0];b.colors={...ch.colors};b.pair=ch.pair;b.logoPos=ch.logoPos;b.iconStyle=ch.iconStyle;
   current=b;
 }
-function resetOverrides(){v.accent=null;v.tColor=null;v.logoFree=null;v.dx=0;v.dy=0;v.logoRot=0;Object.values(v.pf).forEach(p=>{delete p.dx;delete p.dy;delete p.logoFree})}
+function resetOverrides(){v.elo={};v.sel=null;v.foot={mode:'auto',size:1,align:'auto',col:null};try{syncFootUI()}catch(_){}v.accent=null;v.tColor=null;v.logoFree=null;v.dx=0;v.dy=0;v.logoRot=0;Object.values(v.pf).forEach(p=>{delete p.dx;delete p.dy;delete p.logoFree})}
 function useBrand(b){
   current=clone(b);current.isDemo=false;chartes=genChartes(current.palette);resetOverrides();
   setPlateDefault();syncBrandUI();syncVisualUI();renderChartes();renderSaved();schedule();

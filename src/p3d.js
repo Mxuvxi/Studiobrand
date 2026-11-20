@@ -38,6 +38,7 @@ function draw(ctx,W,H,opt){
   const ffg=(L.footOnBg&&mode!=='under')?C.text:tcol;
   const fx=L.footArea&&mode==='bottom'?L.footArea.x:area.x,fw=L.footArea&&mode==='bottom'?L.footArea.w:area.w;
   const fl=layoutFooter(ctx,items,{x:mode==='under'?area.x+offX:fx,maxW:mode==='under'?area.w:fw,align,size:iconSize,maxRows,pair:P,style:b.iconStyle,fg:ffg,accent:(L.footOnBg&&mode!=='under')?C.accent:hlColor});
+  {const _p=fl.paint,fxx=mode==='under'?area.x+offX:fx,fww=mode==='under'?area.w:fw;fl.paint=yy=>elPaint(ctx,'foot',{x:fxx,y:yy,w:fww,h:fl.height,al:align},()=>_p(yy))}
   let bar=null;
   if(mode==='bar'&&hasFooter){const pad=Math.round(base*.025),bh=Math.round(fl.height+pad*2);bar={y:H-safeY-bh,h:bh,pad}}
   let top=L.content.y,bot=L.content.y+L.content.h,footY=0;
@@ -58,14 +59,14 @@ function draw(ctx,W,H,opt){
   let avail=Math.max(20,bot-top);
   const size=(wide?base*.16:base*.105)*L.sizeK*v.tSize;
   const upper=v.upper==='upper'||(v.upper==='auto'&&!!L.upper);
-  const kick=(v.kicker||'').trim();
-  let tagsStr=(v.tags||'').trim();if(!tagsStr&&L.demoTags)tagsStr=L.demoTags;if(tagsStr==='-')tagsStr='';
+  const kick=hid('kicker')?'':(v.kicker||'').trim();
+  let tagsStr=(v.tags||'').trim();if(!tagsStr&&L.demoTags)tagsStr=L.demoTags;if(tagsStr==='-')tagsStr='';if(hid('tags'))tagsStr='';
   const tags=tagsStr?tagsStr.split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean).slice(0,8):[];
   const tagFill=L.tagFill==='accent'?C.accent:L.tagFill==='soft'?rgba(tcol,.22):null;
   const tagText=L.tagFill==='accent'?readableOn(C.accent):tcol;
   const pillFill=contrast(C.accent,refBg)>=2.2?C.accent:tcol;
-  const fitOpts={x:tx0+offX,maxW:tW,size,maxLines:L.lines,align,base,wide,pair:P,C:{...C,text:tcol},title:v.title,sub:v.sub,lhK:v.lh,sK:v.sSize,upper,bar:v.accentBar,effect:v.tEffect,ls:v.ls,hl:v.hl,hlColor,
-    kicker:L.ownKicker?'':kick,pillFill,pillText:readableOn(pillFill),tags,tagsStack:L.tagsStack,tagsNum:L.tagsNum,tagFill,tagText,cta:(v.cta||'').trim(),ctaFill,ctaText};
+  const fitOpts={x:tx0+offX,maxW:tW,size,maxLines:L.lines,align,base,wide,pair:P,C:{...C,text:tcol},title:v.title,sub:hid('sub')?'':v.sub,lhK:v.lh,sK:v.sSize,upper,bar:v.accentBar,effect:v.tEffect,ls:v.ls,hl:v.hl,hlColor,
+    kicker:L.ownKicker?'':kick,pillFill,pillText:readableOn(pillFill),tags,tagsStack:L.tagsStack,tagsNum:L.tagsNum,tagFill,tagText,cta:hid('cta')?'':(v.cta||'').trim(),ctaFill,ctaText};
   let tb=fitBlock(ctx,fitOpts,avail-underH-2*bpad);
   let groupH=tb.height+underH;
   let gy=ty==='t'?top+bpad:ty==='m'?top+(avail-groupH-2*bpad)/2+bpad:bot-groupH-bpad;
@@ -109,12 +110,12 @@ function draw(ctx,W,H,opt){
   if(box){ctx.save();if(v.tBox!=='glass'){ctx.shadowColor='rgba(0,0,0,.25)';ctx.shadowBlur=base*.03}ctx.fillStyle=boxFill;ctx.beginPath();rrPath(ctx,box.x,box.y,box.w,box.h,base*.03);ctx.fill();
     if(v.tBox==='glass'){ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=Math.max(2,base*.003);ctx.stroke()}ctx.restore()}
   if(bar){ctx.fillStyle=C.bg;ctx.fillRect(0,bar.y,W,H-bar.y);fl.paint(bar.y+bar.pad)}
-  tb.paint(gy);
+  if(!hid('title'))elPaint(ctx,'title',{x:tx0+offX,y:gy,w:tW,h:tb.height,al:align},()=>tb.paint(gy));
   if(hasFooter){
     if(mode==='bottom'||mode==='top')fl.paint(footY);
     else if(mode==='under')fl.paint(gy+tb.height+Math.round(gapF*1.3));
   }
   let badge=(v.badge||'').trim();if(!badge)badge=L.badgeDef||'';if(badge==='-')badge='';
-  if(badge)drawBadge(ctx,e,badge);
-  drawLogo(ctx,logoO);
+  if(badge&&!hid('badge'))drawBadge(ctx,e,badge);
+  elLogo(ctx,logoO);
 }

@@ -11,9 +11,15 @@ glyph=glyph.replace("case'address':ctx.beginPath();ctx.arc(0,-h*.22","""case'hou
     case'city':case'address':ctx.beginPath();ctx.arc(0,-h*.22""",1)
 assert "case'city'" in glyph
 assert 'rows.length<=o.maxRows&&Math.max' in glyph
+glyph=glyph.replace("if(!v.icons||!current)return[];","if(!v.icons||!current||hid('foot'))return[];")
+glyph=glyph.replace("function layoutFooter(ctx,items,o){\n  if(!items.length)return{height:0,paint(){}};","function layoutFooter(ctx,items,o){\n  if(!items.length)return{height:0,paint(){}};\n  const F=v.foot||{};o={...o};if(F.size&&F.size!==1)o.size*=F.size;if(F.align&&F.align!=='auto')o.align=F.align;if(F.col)o.fg=F.col;if(F.mode==='icons')items=items.map(it=>({...it,text:''}));if(F.mode==='col')o.maxRows=items.length;if(F.mode==='row')o.maxRows=1;")
+glyph=glyph.replace("rows=wrapRows(w,gap,o.maxW);","rows=F.mode==='col'?w.map((x,i)=>({idx:[i],w:x})):wrapRows(w,gap,o.maxW);")
+glyph=glyph.replace("rows:wrapRows(its.map(i=>i.w),gap,o.maxW)","rows:F.mode==='col'?its.map((it,i)=>({idx:[i],w:it.w})):wrapRows(its.map(i=>i.w),gap,o.maxW)")
+assert "F.mode==='col'" in glyph and "hid('foot')" in glyph
 glyph=glyph.replace('rows.length<=o.maxRows&&Math.max','rows.length<=(f>=.78?Math.min(o.maxRows,2):o.maxRows)&&Math.max')
+glyph=glyph.replace("rows.length<=(f>=.78","(F.mode==='col'||rows.length<=(f>=.78").replace("Math.min(o.maxRows,2):o.maxRows)&&Math.max","Math.min(o.maxRows,2):o.maxRows))&&Math.max")
 glyph=glyph.replace("['facebook','instagram','linkedin','x','tiktok','youtube']","['facebook','instagram','linkedin','x','tiktok','youtube','snapchat','pinterest']")
-js='\n'.join([sl(1,8),sl(11,25),p1,sl(91,202),open('p3a.js').read(),glyph,open('p3b.js').read(),open('p3c.js').read(),open('p3e.js').read(),open('p3f.js').read(),open('p3g.js').read(),open('p3d.js').read(),open('p5a.js').read(),open('p4a.js').read(),open('p4b.js').read()])
+js='\n'.join([sl(1,8),sl(11,25),p1,sl(91,202),open('p3a.js').read(),glyph,open('p3b.js').read(),open('p3c.js').read(),open('p3e.js').read(),open('p3f.js').read(),open('p3g.js').read(),open('p3d.js').read(),open('p5a.js').read(),open('p5b.js').read(),open('p4a.js').read(),open('p4b.js').read()])
 open('app.js','w').write(js)
 body=open('old_body.html').read().split('\n')
 mq='\n'.join(body[:111])
@@ -27,6 +33,14 @@ css+='''
 .panel h3+.pbody{margin-top:14px}
 .chips .chip .ap{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
 textarea{font:inherit;width:100%;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--fg);padding:9px 11px;resize:vertical}
+.el-list{display:flex;flex-direction:column;gap:6px}
+.el{display:flex;gap:6px;align-items:stretch}
+.el .el-n{flex:1;text-align:left;font:inherit;cursor:pointer;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--fg);display:flex;flex-direction:column}
+.el .el-n small{color:var(--muted);font-size:12px}
+.el.on .el-n{border-color:rgba(255,160,90,.7);background:rgba(255,138,61,.16)}
+.el.off .el-n{opacity:.55}
+.el .el-eye{font:inherit;font-size:13px;cursor:pointer;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--glass);color:var(--fg);min-width:84px}
+.el-edit{display:flex;flex-direction:column;gap:10px;padding:12px;border-radius:14px;border:1px solid rgba(255,160,90,.5);background:rgba(255,138,61,.08)}
 .cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .cats button{font:inherit;font-size:13px;cursor:pointer;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--glass);color:var(--muted)}
 .cats button small{opacity:.65;margin-left:3px}
