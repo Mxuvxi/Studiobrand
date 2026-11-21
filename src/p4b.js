@@ -337,6 +337,6 @@ window.addEventListener('hashchange',route);
   buildStatic();setPlateDefault();syncBrandUI();renderChartes();renderSaved();syncVisualUI();syncStageInfo();setTab('model');route();schedule();
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null}catch(e){dl=null}
-  window.__atelier={v,draw,TPLS,FORMATS,tplOK,current:()=>current,sampleCut,cutOpen,cutFinish,CUT,get current(){return current}};
+  window.__atelier={v,draw,TPLS,FORMATS,tplOK,current:()=>current,sampleCut,autoMask,cutOpen,cutFinish,CUT,get current(){return current}};
 })();
 })();
