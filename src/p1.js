@@ -149,7 +149,7 @@ const CAN_FILTER=(()=>{try{return'filter'in CanvasRenderingContext2D.prototype}c
 const DEFOPT=()=>({rm:false,tol:40,mode:'edge',bg:'#ffffff'});
 const DEMO_TAGS='Idée, Action, Résultat';
 
-let saved=[],current=null,chartes=[],presets=[];
+let saved=[],kept=[],current=null,chartes=[],presets=[];
 const V0=()=>({fmt:'post',tpl:'affiche',title:'Notre nouvelle collection arrive',sub:'Disponible dès lundi, en boutique et en ligne',kicker:'',cta:'',badge:'',tags:'',slogan:'',org:'',person:'',date:'',time:'',place:'',secA:'',listA:'',secB:'',listB:'',body:'',foot:'',
   tFont:'auto',bFont:'auto',tSize:1,sSize:1,lh:1,ls:0,tWidth:1,upper:'auto',tColor:null,tEffect:'none',tBox:'none',accentBar:true,hl:true,
   align:'auto',ty:'auto',dx:0,dy:0,margin:1,footerPos:'auto',icons:true,accent:null,

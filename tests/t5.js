@@ -1,0 +1,26 @@
+const {chromium}=require('playwright');
+(async()=>{
+ const br=await chromium.launch();const ctx=await br.newContext({viewport:{width:1440,height:1000},acceptDownloads:true,offline:true});const pg=await ctx.newPage();
+ const errs=[],reqs=[];pg.on('pageerror',e=>errs.push('PAGE '+e.message));pg.on('console',m=>{if(m.type()==='error')errs.push('CON '+m.text())});pg.on('request',r=>{if(!r.url().startsWith('file:')&&!r.url().startsWith('data:')&&!r.url().startsWith('blob:'))reqs.push(r.url())});
+ await pg.goto('file://'+__dirname+'/../src/atelier-de-marque.html#visuel');await pg.waitForTimeout(2500);
+ await pg.screenshot({path:'u_model.png'});
+ await pg.click('#seg-format button[data-k=affiche]');await pg.waitForTimeout(400);
+ console.log('cats',await pg.evaluate(()=>[...document.querySelectorAll('#tpl-cats button')].map(b=>b.textContent.trim()).join(' | ')));
+ await pg.click('#tpl-cats button[data-k=affiche]');await pg.waitForTimeout(300);
+ await pg.click('#tpl-gal button[data-k=flyer_services]');await pg.waitForTimeout(800);
+ await pg.screenshot({path:'u_aff.png'});
+ await pg.click('#ctabs button[data-k=text]');
+ await pg.fill('#v-title','Votre épargne, *notre engagement* pour un avenir meilleur');
+ await pg.fill('#v-seca','Nos offres');await pg.fill('#v-lista','Épargne|Sûre et simple\nCrédit|Pour vos projets\nConseil|Un appui local');
+ await pg.fill('#v-slogan','Ensemble, on avance !');await pg.waitForTimeout(800);
+ await pg.click('#ctabs button[data-k=model]');await pg.screenshot({path:'u_aff2.png'});
+ await pg.click('#seg-format button[data-k=rollup]');await pg.waitForTimeout(500);
+ console.log('tpl after rollup',await pg.evaluate(()=>window.__atelier.v.tpl));
+ await pg.click('#seg-format button[data-k=banniere]');await pg.waitForTimeout(500);
+ console.log('tpl after banniere',await pg.evaluate(()=>window.__atelier.v.tpl),await pg.evaluate(()=>document.querySelectorAll('#tpl-gal button').length));
+ await pg.click('#seg-format button[data-k=affiche]');
+ await pg.click('#ctabs button[data-k=export]');
+ let [d]=await Promise.all([pg.waitForEvent('download'),pg.click('#ex-png')]);console.log('png',d.suggestedFilename());
+ [d]=await Promise.all([pg.waitForEvent('download',{timeout:90000}),pg.click('#ex-zip')]);console.log('zip',d.suggestedFilename());await d.saveAs('out.zip');
+ console.log('requests',reqs.length,'errors',errs);await br.close();
+})();

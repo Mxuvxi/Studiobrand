@@ -148,14 +148,15 @@ async function backupAll(){
 async function restoreAll(file){
   try{
     const d=JSON.parse(await file.text());let n=0;
-    for(const b of (d.brands||[])){
+    let bad=0;
+    for(const b of (d.brands||[])){try{
       b.info=b.info||{};b.show=b.show||{};b.logoOpt=Object.assign(DEFOPT(),b.logoOpt||{});
       if(saved.some(s=>s.id===b.id))b.id=uid();
       await buildLogo(b);saved.push(b);n++;
-    }
+    }catch(e){bad++}}
     for(const p of (d.styles||[]))if(p&&p.name&&!presets.some(q=>q.name===p.name)){presets.push(p)}
-    await persist();await persistPresets();renderSaved();syncVisualUI();
-    toast(`${n} marque(s) importée(s).`);
+    const ok=await persist()&&await persistPresets();renderSaved();syncVisualUI();
+    toast(bad?`${n} marque(s) importée(s), ${bad} illisible(s) ignorée(s).`:ok?`${n} marque(s) importée(s).`:`${n} marque(s) importée(s), mais non enregistrées dans ce navigateur : exportez une sauvegarde.`);
   }catch(e){toast("Ce fichier de sauvegarde n'est pas valide.")}
 }
 
@@ -337,6 +338,6 @@ window.addEventListener('hashchange',route);
   buildStatic();setPlateDefault();syncBrandUI();renderChartes();renderSaved();syncVisualUI();syncStageInfo();setTab('model');route();schedule();
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
   try{dl=(window.claude&&window.claude.use)?await window.claude.use('downloads'):null}catch(e){dl=null}
-  window.__atelier={v,draw,TPLS,FORMATS,tplOK,current:()=>current,sampleCut,autoMask,cutOpen,cutFinish,CUT,get current(){return current}};
+  window.__atelier={v,draw,TPLS,FORMATS,tplOK,current:()=>current,sampleCut,autoMask,guidedAlpha,upMask,minCut,largestCC,persist,store:()=>({saved,kept}),cutOpen,cutFinish,CUT,get current(){return current}};
 })();
 })();

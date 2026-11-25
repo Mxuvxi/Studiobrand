@@ -1,0 +1,288 @@
+
+
+<div class="wrap">
+  <header class="nav">
+    <div class="mark"><i></i><span>Atelier de Marque</span></div>
+    <nav class="tabs" aria-label="Étapes">
+      <a href="#marque" id="tab-marque">1 · Ma marque</a>
+      <a href="#visuel" id="tab-visuel">2 · Mon visuel</a>
+    </nav>
+  </header>
+
+  <!-- ===== ÉTAPE 1 ===== -->
+  <section id="view-marque" hidden aria-label="Ma marque" class="wrap" style="padding:0">
+    <div class="intro">
+      <span class="eyebrow">Étape 1</span>
+      <h1>Votre logo devient une identité</h1>
+      <p>Importez le logo, saisissez les coordonnées de l'entreprise, choisissez une charte. Tout est enregistré avec la marque.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Mes marques</h3>
+        <button class="btn small" id="btn-new" type="button">Nouvelle marque</button>
+      </div>
+      <div id="saved" class="chips"></div>
+      <p class="hint" id="saved-empty">Aucune marque enregistrée pour le moment. La marque d'exemple ci-dessous montre le résultat.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Logo</h3>
+      <div class="logo-row">
+        <div class="logo-col">
+          <div class="logo-box" id="logo-box" data-bg="checker"><img id="logo-prev" alt="Aperçu du logo"></div>
+          <button class="linkbtn" id="logo-bg" type="button">Changer le fond d'aperçu</button>
+        </div>
+        <div class="stack">
+          <div class="field">
+            <label for="brand-name">Nom de la marque</label>
+            <input id="brand-name" type="text" maxlength="40" autocomplete="off">
+          </div>
+          <div class="row">
+            <label class="btn primary" for="logo-file">Importer un logo</label>
+            <input id="logo-file" class="sr" type="file" accept="image/*">
+            <span id="logo-tag" class="tag"></span>
+          </div>
+          <p class="hint" id="logo-hint"></p>
+          <div class="rm">
+            <label class="check"><input type="checkbox" id="rm-on"> Rendre le fond du logo transparent</label>
+            <div id="rm-opts" hidden style="display:flex;flex-direction:column;gap:12px">
+              <div class="row">
+                <span class="lbl">Couleur du fond</span>
+                <input type="color" id="rm-color" aria-label="Couleur du fond à retirer" value="#ffffff">
+                <button class="btn small" id="rm-detect" type="button">Détecter</button>
+                <button class="btn small" id="rm-pick" type="button">Pipette</button>
+              </div>
+              <div class="grid2">
+                <div class="field"><label for="rm-tol">Tolérance</label><input id="rm-tol" type="range" min="5" max="140" step="1" value="40"></div>
+                <div class="field"><label for="rm-mode">Zone retirée</label>
+                  <select id="rm-mode"><option value="edge">Fond extérieur seulement</option><option value="all">Cette couleur partout</option></select></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <span class="lbl">Couleurs détectées</span>
+            <div id="detected" class="dots" style="margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Informations de l'entreprise</h3>
+        <span class="hint">Enregistrées avec la marque. Cochez ce qui apparaît en bas des visuels.</span>
+      </div>
+      <div class="field"><label for="f-slogan">Slogan</label><input id="f-slogan" type="text" maxlength="90" autocomplete="off" placeholder="Votre phrase d'accroche"></div>
+      <div id="infos" class="infos"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Chartes proposées</h3>
+        <span class="hint">Choisissez celle qui vous parle, puis ajustez.</span>
+      </div>
+      <div id="chartes" class="chartes"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Ajuster la charte</h3>
+      <div class="cap-wrap" aria-label="Palette de la charte">
+        <div class="cap" id="cap"></div>
+        <div class="hexes" id="hexes"></div>
+        <div class="gbar"><div id="gbar"></div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><span class="lbl">Fond</span><div class="colorfield"><input type="color" id="c-bg" aria-label="Couleur de fond"><span id="t-bg"></span></div></div>
+        <div class="field"><span class="lbl">Texte</span><div class="colorfield"><input type="color" id="c-text" aria-label="Couleur du texte"><span id="t-text"></span></div></div>
+        <div class="field"><span class="lbl">Accent</span><div class="colorfield"><input type="color" id="c-accent" aria-label="Couleur d'accent"><span id="t-accent"></span></div></div>
+        <div class="field"><span class="lbl">Secondaire</span><div class="colorfield"><input type="color" id="c-second" aria-label="Couleur secondaire"><span id="t-second"></span></div></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="b-pair">Polices</label><select id="b-pair"></select></div>
+        <div class="field"><label for="b-pos">Position du logo</label><select id="b-pos"></select></div>
+        <div class="field"><label for="b-icons">Style des icônes</label><select id="b-icons"></select></div>
+      </div>
+      <div class="row">
+        <button class="btn primary" id="btn-save" type="button">Enregistrer la marque</button>
+        <a class="btn" href="#visuel">Créer un visuel</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ÉTAPE 2 ===== -->
+  <section id="view-visuel" hidden aria-label="Mon visuel" class="wrap" style="padding:0">
+    <div class="intro">
+      <span class="eyebrow">Étape 2</span>
+      <h1>Votre photo devient un visuel</h1>
+      <p>Choisissez un modèle, puis réglez le texte, le logo, la photo et la disposition. Le logo, les couleurs et les coordonnées viennent de la marque.</p>
+    </div>
+    <div class="studio">
+      <div class="stage-col">
+        <div class="stage"><canvas id="cv" width="1080" height="1080" aria-label="Aperçu du visuel"></canvas></div>
+        <div class="row" style="justify-content:center">
+          <span class="lbl">Glisser sur l'aperçu :</span>
+          <div id="drag-seg" class="seg" role="group" aria-label="Élément à déplacer">
+            <button type="button" data-k="photo" aria-pressed="true">Photo</button>
+            <button type="button" data-k="logo" aria-pressed="false">Logo</button>
+            <button type="button" data-k="text" aria-pressed="false">Texte</button>
+          </div>
+        </div>
+        <p class="hint" id="stage-info" style="text-align:center"></p>
+      </div>
+
+      <div class="controls">
+        <div class="panel">
+          <div class="activebrand">
+            <h3>Marque</h3>
+            <select id="brand-switch" aria-label="Choisir la marque"></select>
+            <a class="btn small" href="#marque">Modifier</a>
+          </div>
+        </div>
+
+        <details class="panel" open>
+          <summary><h3>Format et modèle</h3></summary>
+          <div class="pbody">
+            <div id="seg-format" class="seg" role="group" aria-label="Format"></div>
+            <div id="tpl-gal" class="gal" role="group" aria-label="Modèles"></div>
+            <p class="hint" id="style-info"></p>
+            <div><button class="btn small" id="rand" type="button">Proposer un style au hasard</button></div>
+          </div>
+        </details>
+
+        <details class="panel" open>
+          <summary><h3>Photo</h3></summary>
+          <div class="pbody">
+            <div class="row">
+              <label class="btn primary" for="photo-file">Choisir une photo</label>
+              <input id="photo-file" class="sr" type="file" accept="image/*">
+              <span id="photo-tag" class="tag">Photo d'exemple</span>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="p-zoom">Zoom</label><input id="p-zoom" type="range" min="1" max="3" step="0.01" value="1"></div>
+              <div class="field"><label for="p-fx">Position horizontale</label><input id="p-fx" type="range" min="0" max="1" step="0.01" value="0.5"></div>
+              <div class="field"><label for="p-fy">Position verticale</label><input id="p-fy" type="range" min="0" max="1" step="0.01" value="0.5"></div>
+            </div>
+            <label class="check"><input type="checkbox" id="p-flip"> Retourner la photo (miroir)</label>
+            <div class="field"><span class="lbl">Ambiance de la photo</span><div id="filters" class="seg" role="group" aria-label="Filtre"></div></div>
+            <p class="hint" id="filter-hint" hidden>Les filtres ne sont pas disponibles sur ce navigateur.</p>
+            <div class="grid2">
+              <div class="field"><label for="p-bright">Luminosité</label><input id="p-bright" type="range" min="-0.5" max="0.5" step="0.01" value="0"></div>
+              <div class="field"><label for="p-contr">Contraste</label><input id="p-contr" type="range" min="-0.5" max="0.5" step="0.01" value="0"></div>
+              <div class="field"><label for="p-sat">Saturation</label><input id="p-sat" type="range" min="-1" max="1" step="0.01" value="0"></div>
+              <div class="field"><label for="p-blur">Flou</label><input id="p-blur" type="range" min="0" max="12" step="0.5" value="0"></div>
+              <div class="field"><label for="p-radius">Coins arrondis (modèles à cadre)</label><input id="p-radius" type="range" min="0" max="0.08" step="0.002" value="0.022"></div>
+            </div>
+            <div class="grid2">
+              <div class="field"><label for="p-ov">Voile sur la photo</label>
+                <select id="p-ov"><option value="auto">Selon le modèle</option><option value="gradient">Dégradé</option><option value="solid">Voile uniforme</option><option value="none">Aucun</option></select></div>
+              <div class="field"><label for="p-ovc">Couleur du voile</label>
+                <select id="p-ovc"><option value="brand">Couleur de la marque</option><option value="black">Noir</option><option value="white">Blanc</option></select></div>
+              <div class="field"><label for="p-ova">Intensité du voile</label><input id="p-ova" type="range" min="0" max="1.6" step="0.05" value="1"></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel" open>
+          <summary><h3>Texte</h3></summary>
+          <div class="pbody">
+            <div class="field"><label for="v-title">Titre</label><input id="v-title" type="text" maxlength="90" autocomplete="off"></div>
+            <div class="field"><label for="v-sub">Sous-titre</label><input id="v-sub" type="text" maxlength="120" autocomplete="off"></div>
+            <div><button class="linkbtn" id="use-slogan" type="button" hidden>Utiliser le slogan comme sous-titre</button></div>
+            <div class="field"><span class="lbl">Style de texte</span><div id="txtstyles" class="seg" role="group" aria-label="Style de texte"></div></div>
+            <div class="grid2">
+              <div class="field"><label for="t-font">Police du titre</label><select id="t-font"></select></div>
+              <div class="field"><label for="t-bfont">Police du sous-titre</label><select id="t-bfont"></select></div>
+              <div class="field"><label for="t-upper">Casse du titre</label>
+                <select id="t-upper"><option value="auto">Selon le modèle</option><option value="normal">Normale</option><option value="upper">MAJUSCULES</option></select></div>
+              <div class="field"><label for="t-size">Taille du titre</label><input id="t-size" type="range" min="0.5" max="1.6" step="0.02" value="1"></div>
+              <div class="field"><label for="t-ssize">Taille du sous-titre</label><input id="t-ssize" type="range" min="0.6" max="1.8" step="0.02" value="1"></div>
+              <div class="field"><label for="t-lh">Interligne</label><input id="t-lh" type="range" min="0.8" max="1.4" step="0.02" value="1"></div>
+              <div class="field"><label for="t-width">Largeur du texte</label><input id="t-width" type="range" min="0.4" max="1" step="0.02" value="1"></div>
+            </div>
+            <div class="row">
+              <span class="lbl">Couleur du texte</span>
+              <input type="color" id="t-color" aria-label="Couleur du texte">
+              <button class="btn small" id="t-color-reset" type="button">Couleur de la charte</button>
+            </div>
+            <div class="checks">
+              <label class="check"><input type="checkbox" id="t-bar"> Barre d'accent au-dessus du titre</label>
+              <label class="check"><input type="checkbox" id="t-shadow"> Ombre sous le texte</label>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel" open>
+          <summary><h3>Disposition</h3></summary>
+          <div class="pbody">
+            <div class="row" style="align-items:flex-start;gap:18px">
+              <div class="field"><span class="lbl">Position du texte</span><div id="pos9" class="pos9" role="group" aria-label="Position du texte"></div></div>
+              <div class="stack" style="flex:1 1 220px;gap:12px">
+                <div class="field"><label for="l-foot">Ligne de coordonnées</label>
+                  <select id="l-foot"><option value="auto">Selon le modèle</option><option value="bottom">En bas</option><option value="under">Sous le texte</option><option value="top">En haut</option></select></div>
+                <div class="field"><label for="l-margin">Marges</label><input id="l-margin" type="range" min="0.3" max="2.2" step="0.05" value="1"></div>
+              </div>
+            </div>
+            <div class="row">
+              <button class="btn small" id="l-text-reset" type="button">Replacer le texte</button>
+              <button class="btn small" id="l-reset" type="button">Réinitialiser la disposition</button>
+            </div>
+            <p class="hint">Choisissez « Texte » ou « Logo » sous l'aperçu, puis faites glisser pour les placer librement.</p>
+          </div>
+        </details>
+
+        <details class="panel" open>
+          <summary><h3>Logo</h3></summary>
+          <div class="pbody">
+            <div class="grid2">
+              <div class="field"><label for="v-pos">Position du logo</label><select id="v-pos"></select></div>
+              <div class="field"><label for="v-scale">Taille du logo</label><input id="v-scale" type="range" min="0.4" max="2.2" step="0.05" value="1"></div>
+              <div class="field"><label for="l-op">Opacité du logo</label><input id="l-op" type="range" min="0.2" max="1" step="0.05" value="1"></div>
+              <div class="field"><label for="l-mm">Distance du bord</label><input id="l-mm" type="range" min="0.2" max="2.5" step="0.05" value="1"></div>
+              <div class="field"><label for="l-tint">Couleur du logo</label>
+                <select id="l-tint"><option value="orig">Couleurs d'origine</option><option value="white">Blanc</option><option value="black">Noir</option><option value="accent">Couleur d'accent</option></select></div>
+              <div class="field"><label for="v-plate">Fond derrière le logo</label>
+                <select id="v-plate"><option value="none">Aucun (logo transparent)</option><option value="light">Pastille claire</option><option value="dark">Pastille sombre</option><option value="accent">Pastille couleur d'accent</option><option value="bg">Pastille couleur de la marque</option></select></div>
+              <div class="field"><label for="l-shape">Forme de la pastille</label>
+                <select id="l-shape"><option value="round">Arrondie</option><option value="circle">Cercle</option><option value="square">Carrée</option></select></div>
+            </div>
+            <label class="check"><input type="checkbox" id="v-shadow"> Ombre légère sous le logo (sans pastille)</label>
+            <div class="row">
+              <button class="btn small" id="l-logo-reset" type="button">Replacer le logo</button>
+              <span class="lbl">Couleur d'accent du visuel</span>
+              <input type="color" id="v-accent" aria-label="Couleur d'accent du visuel">
+              <button class="btn small" id="v-accent-reset" type="button">Couleur de la marque</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel" open>
+          <summary><h3>Coordonnées en bas du visuel</h3></summary>
+          <div class="pbody">
+            <label class="check"><input type="checkbox" id="v-icons"> Afficher la ligne de coordonnées</label>
+            <div id="show-group" class="checks" role="group" aria-label="Informations affichées"></div>
+            <p class="hint" id="show-empty" hidden>Ajoutez le téléphone, les réseaux et le site dans « Ma marque » pour les afficher ici.</p>
+          </div>
+        </details>
+
+        <div class="panel">
+          <h3>Exporter</h3>
+          <div class="row">
+            <button class="btn primary" id="ex-png" type="button">Exporter en PNG</button>
+            <button class="btn" id="ex-jpg" type="button">Exporter en JPG</button>
+          </div>
+          <p class="hint">PNG garde la qualité maximale, JPG est plus léger. Le fichier est généré dans votre navigateur.</p>
+          <div><button class="linkbtn" id="ex-show" type="button">Le téléchargement ne démarre pas ? Afficher l'image</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="ov" class="ov" hidden role="dialog" aria-label="Image à enregistrer">
+  <p>Faites un clic droit sur l'image (ou un appui long sur téléphone), puis choisissez « Enregistrer l'image ».</p>
+  <img id="ov-img" alt="Visuel exporté">
+  <button class="btn primary" id="ov-close" type="button">Fermer</button>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+

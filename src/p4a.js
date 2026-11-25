@@ -46,7 +46,7 @@ async function kvSet(k,val){try{const db=await idbOpen();await new Promise((res,
 const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}};
 const lsSet=(k,val)=>{try{localStorage.setItem(k,JSON.stringify(val));return true}catch(e){return false}};
 const stripBrand=({logoImg,logo,...r})=>r;
-async function persist(){const arr=saved.map(stripBrand);let ok=await kvSet('brands',arr);if(!ok)ok=lsSet(LS,arr);return ok}
+async function persist(){const arr=[...saved.map(stripBrand),...kept];let ok=await kvSet('brands',arr);if(!ok)ok=lsSet(LS,arr);return ok}
 async function persistPresets(){let ok=await kvSet('presets',presets);if(!ok)ok=lsSet(LSP,presets);return ok}
 async function loadSaved(){
   let arr=await kvGet('brands');if(!Array.isArray(arr))arr=lsGet(LS)||[];
@@ -55,8 +55,8 @@ async function loadSaved(){
   for(const b of arr){try{
     b.info=b.info||{};b.show=b.show||{};b.logoOpt=Object.assign(DEFOPT(),b.logoOpt||{});
     await buildLogo(b);out.push(b);
-  }catch(e){}}
-  saved=out;
+  }catch(e){kept.push(b)}}/* une marque illisible reste stockée : on ne l'efface jamais en silence */
+  saved=out;if(kept.length)setTimeout(()=>toast(kept.length+' marque(s) n\'ont pas pu être rechargées. Elles restent conservées.'),900);
 }
 const clone=b=>({...b,colors:{...b.colors},info:{...b.info},show:{...b.show},logoOpt:{...b.logoOpt},palette:[...(b.palette||[])]});
 
@@ -128,10 +128,10 @@ function renderSaved(){
     open.addEventListener('click',()=>useBrand(b));
     const x=document.createElement('button');x.type='button';x.className='x';x.textContent='✕';x.setAttribute('aria-label','Supprimer '+b.name);
     let armed=false,tm=0;
-    x.addEventListener('click',()=>{
+    x.addEventListener('click',async()=>{
       if(!armed){armed=true;x.textContent='Supprimer ?';x.classList.add('confirm');tm=setTimeout(()=>{armed=false;x.textContent='✕';x.classList.remove('confirm')},3000);return}
-      clearTimeout(tm);saved=saved.filter(s=>s.id!==b.id);persist();if(current.id===b.id)current.id=uid();
-      renderSaved();syncVisualUI();toast('Marque supprimée.');
+      clearTimeout(tm);saved=saved.filter(s=>s.id!==b.id);const ok=await persist();if(current.id===b.id)current.id=uid();
+      renderSaved();syncVisualUI();toast(ok?'Marque supprimée.':"Suppression non enregistrée dans ce navigateur.");
     });
     chip.append(open,x);box.append(chip);
   });

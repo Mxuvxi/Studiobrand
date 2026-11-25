@@ -43,16 +43,16 @@ function boxBlurF(a,w,h,r){
     for(let y=0;y<h;y++){o[y*w+x]=s/n;s+=t[Math.min(h-1,y+r+1)*w+x]-t[Math.max(0,y-r)*w+x]}}
   return o;
 }
-function largestCC(lab,w,h){
-  const N=w*h,id=new Int32Array(N),st=new Int32Array(N);let best=0,bestId=0,cur=0;
+function largestCC(lab,w,h,ratio=1){
+  const N=w*h,id=new Int32Array(N),st=new Int32Array(N);let best=0,bestId=0,cur=0;const sz=[0];
   for(let s=0;s<N;s++){if(lab[s]!==1||id[s])continue;cur++;let sp=0,cnt=0;st[sp++]=s;id[s]=cur;
     while(sp){const p=st[--sp];cnt++;const x=p%w,y=(p/w)|0;
       if(x>0&&lab[p-1]===1&&!id[p-1]){id[p-1]=cur;st[sp++]=p-1}
       if(x<w-1&&lab[p+1]===1&&!id[p+1]){id[p+1]=cur;st[sp++]=p+1}
       if(y>0&&lab[p-w]===1&&!id[p-w]){id[p-w]=cur;st[sp++]=p-w}
       if(y<h-1&&lab[p+w]===1&&!id[p+w]){id[p+w]=cur;st[sp++]=p+w}}
-    if(cnt>best){best=cnt;bestId=cur}}
-  for(let i=0;i<N;i++)lab[i]=id[i]===bestId?1:0;
+    sz.push(cnt);if(cnt>best){best=cnt;bestId=cur}}
+  for(let i=0;i<N;i++)lab[i]=id[i]&&(ratio>=1?id[i]===bestId:sz[id[i]]>=best*ratio)?1:0;
 }
 function fillHoles(lab,w,h,bg){
   const N=w*h,seen=new Uint8Array(N),st=new Int32Array(N);let sp=0;
@@ -164,17 +164,8 @@ function grabCut(d,w,h,fg,bg,rect){
   }
   const m=new Uint8Array(N);for(let p=0;p<N;p++)m[p]=lab[p]>=2?1:0;
   /* on garde la forme principale (et les formes presque aussi grandes), on bouche les trous */
-  keepMain(m,gw,gh,B);fillHoles(m,gw,gh,B);
+  largestCC(m,gw,gh,.3);fillHoles(m,gw,gh,B);
   return{m,gw,gh};
-}
-function keepMain(lab,w,h,bg){
-  const N=w*h,id=new Int32Array(N),st=new Int32Array(N),sz=[0];let cur=0;
-  for(let s=0;s<N;s++){if(lab[s]!==1||id[s])continue;cur++;let sp=0,c=0;st[sp++]=s;id[s]=cur;
-    while(sp){const p=st[--sp];c++;const x=p%w,y=(p/w)|0;
-      if(x>0&&lab[p-1]===1&&!id[p-1]){id[p-1]=cur;st[sp++]=p-1}if(x<w-1&&lab[p+1]===1&&!id[p+1]){id[p+1]=cur;st[sp++]=p+1}
-      if(y>0&&lab[p-w]===1&&!id[p-w]){id[p-w]=cur;st[sp++]=p-w}if(y<h-1&&lab[p+w]===1&&!id[p+w]){id[p+w]=cur;st[sp++]=p+w}}
-    sz.push(c)}
-  const mx=Math.max(...sz);for(let i=0;i<N;i++)lab[i]=id[i]&&sz[id[i]]>=mx*.3?1:0;
 }
 /* filtre guidé : colle le bord du masque aux contours réels de la photo */
 function guidedAlpha(p,I,w,h,r,eps){
@@ -231,12 +222,12 @@ function cutRender(){
 }
 function cutPush(){CUT.undo.push({m:CUT.mask.slice(),f:CUT.fgS.slice(),b:CUT.bgS.slice()});if(CUT.undo.length>14)CUT.undo.shift()}
 function cutAuto(push){
-  if(CUT.busy)return;CUT.busy=true;$('cut-state').textContent='Détection en cours…';
+  if(CUT.busy){CUT.again=true;return}CUT.busy=true;$('cut-state').textContent='Détection en cours…';
   setTimeout(()=>{
     try{if(push)cutPush();const t0=performance.now(),m=autoMask(CUT.data,CUT.w,CUT.h,CUT.fgS,CUT.bgS,CUT.rect);CUT.mask=m;cutRender();
       $('cut-state').textContent='Corrigez avec « + Garder » / « − Effacer » (le calcul se refait après chaque trait), ou tracez un cadre autour de la personne.'}
     catch(e){console.error(e);$('cut-state').textContent='La détection a échoué.'}
-    CUT.busy=false;
+    CUT.busy=false;if(CUT.again){CUT.again=false;cutAuto(false)}
   },30);
 }
 function cutFlood(){
@@ -262,7 +253,7 @@ function cutPaint(px,py){
   cutRender();
 }
 function cutFinish(){
-  const src=CUT.src,S=Math.min(1,1400/Math.max(src.width,src.height)),W=Math.max(8,Math.round(src.width*S)),H=Math.max(8,Math.round(src.height*S));
+  const src=CUT.src,S=Math.min(1,1100/Math.max(src.width,src.height)),W=Math.max(8,Math.round(src.width*S)),H=Math.max(8,Math.round(src.height*S));
   const out=document.createElement('canvas');out.width=W;out.height=H;const ox=out.getContext('2d',{willReadFrequently:true});
   ox.drawImage(src,0,0,W,H);const od=ox.getImageData(0,0,W,H),dd=od.data,m=new Float32Array(CUT.w*CUT.h);
   for(let i=0;i<m.length;i++)m[i]=CUT.mask[i]/255;
